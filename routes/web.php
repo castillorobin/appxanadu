@@ -59,3 +59,7 @@ Route::get('/facturacion/ver/{id}', [App\Http\Controllers\FacturaController::cla
 Route::get('/facturacion/verpdf/{id}', [App\Http\Controllers\FacturaController::class, 'verpdf'])->name('verpdf');
 
 Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaController::class, 'borrardet'])->name('borrardet');
+
+// Control
+Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
+

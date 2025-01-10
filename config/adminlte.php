@@ -319,6 +319,11 @@ return [
        
         ['header' => 'OPCIONES'],
         [
+            'text' => 'Control',
+            'url' => 'control',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-fw fa-user',

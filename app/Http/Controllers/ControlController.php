@@ -12,7 +12,8 @@ class ControlController extends Controller
      */
     public function index()
     {
-        //
+        $controles = Control::all();
+        return view('control.index', compact('controles'));
     }
 
     /**
@@ -44,7 +45,7 @@ class ControlController extends Controller
      */
     public function edit(Control $control)
     {
-        //
+        
     }
 
     /**
