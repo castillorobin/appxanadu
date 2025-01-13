@@ -62,4 +62,6 @@ Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaControlle
 
 // Control
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
-
+Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');
+Route::get('/control/guardar', [App\Http\Controllers\ControlController::class, 'guardar'])->name('guardarcon');
+Route::get('/control/salida/{id}', [App\Http\Controllers\ControlController::class, 'salida'])->name('salidacon');

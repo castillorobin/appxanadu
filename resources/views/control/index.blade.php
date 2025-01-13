@@ -17,7 +17,7 @@
             <div class="card card-default">
                 <div class="card-header">
                     <span class="card-title">Listado de controles</span>
-                    <a href="/cliente/crear">
+                    <a href="/control/crear">
                     <button type="button" class="btn btn-success" style="float: right;">Agregar Control</button>
                 </a>
                 </div>
@@ -33,14 +33,16 @@
                                 <th scope="col">Placa</th>
                                 <th scope="col">Habitacion</th>
                                 <th scope="col">Entrada</th>
-                                <th scope="col">Salida</th>
+                                
                                 <th scope="col">Tarifa</th>
-                                <th scope="col">Accion</th>
+                                <th scope="col">Salida</th>
                             </tr>
                         </thead>
                         <tbody>
                             
                             @for ($i=0; $i< count($controles); $i++)
+                            @if($controles[$i]->estado == 1)
+                            
                             <tr >
                             <td>{{ $controles[$i]->id }}</td>
                            
@@ -48,24 +50,19 @@
                             <td>{{ $controles[$i]->placa }}</td>
                             <td>{{ $controles[$i]->habitacion }}</td>
                             <td>{{ $controles[$i]->entrada }}</td>
-                            <td>{{ $controles[$i]->salida }}</td>
+                       
                             <td>{{ $controles[$i]->tarifa }}</td>
                         
                             <td class="opciones text-center" style="">
-                                <a href="/cliente/ver">
-                                <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
-                            </a>           
+                            
 
-                            <a href="/cliente/editar/{{ $controles[$i]->id }}">
-                                <button type="button" class="btn btn-warning"><i class="fas fa-edit"></i></button>
-                            </a>
-
-                                <a href="/cliente/borrar/{{ $controles[$i]->id }}">
-                                <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                <a href="/control/salida/{{ $controles[$i]->id }}">
+                                <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i>Salida</button>
                             </a>
                         
                             </td>
                             </tr>
+                            @endif
                             @endfor
                         </tbody>
 

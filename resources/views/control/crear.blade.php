@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Proveedor')
+@section('title', 'Agregar Control')
 
 @section('content_header')
-    <h1>Agregar de Cliente</h1>
+    <h1>Agregar de Control</h1>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 @stop
@@ -15,7 +15,7 @@
 <section class="content container-fluid">
     <div class="row">
         <div class="col-md-12">
-
+        <input type="text" value="{{date_default_timezone_set('America/El_Salvador') }}" hidden>
             <div class="card card-default">
                 <div class="card-header">
                     <span class="card-title">Ingresar Datos</span>
@@ -25,38 +25,48 @@
 
                     
                     
-<form action="/cliente/guardar" method="get">
+<form action="/control/guardar" method="get">
 @csrf
         @method('GET')
 
-                    <div class="mb-3 col-8">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese el nombre">
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Fecha</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ date('d-m-Y') }}" readonly>
                     </div>
 
                     
 
-                    <div class="mb-3 col-8">
-                        <label class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese la dirección">
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Vehiculo</label>
+                        <input type="text" class="form-control" id="vehiculo" name="vehiculo" placeholder="Ingrese el vehiculo">
                     </div>
 
                     <div class="mb-3 col-4">
-                        <label class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese el # telefono">
+                        <label class="form-label"># de placa</label>
+                        <input type="text" class="form-control" id="placa" name="placa" value="P">
                     </div>
 
 
                     <div class="mb-3 col-4">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="correo" name="correo" placeholder="nombre@dominio.com">
+                        <label class="form-label"># de Habitacion</label>
+                        <select class="form-control js-example-basic-single produ" name="habitacion" id="habitacion" >
+                            @foreach($habitaciones as $producto)
+                            <option value="{{$producto->Nombre}}">{{$producto->Nombre}}</option>
+                            
+                            
+                            @endforeach
+                            
+                        </select>
                     </div>
 
                     <div class="mb-3 col-4">
-                        <label class="form-label">DUI</label>
-                        <input type="text" class="form-control" id="dui" name="dui" placeholder="Ingrese el DUI">
+                        <label class="form-label">Hora de Entrada</label>
+                        <input type="text" class="form-control" id="entrada" name="entrada" value="{{date('h:i:s A')}}" readonly>
                     </div>
-                    
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Tarifa</label>
+                        <input type="text" class="form-control" id="tarifa" name="tarifa" placeholder="$">
+                    </div>
 
 
 <hr>
@@ -64,7 +74,7 @@
 
                     <button type="submit" class="btn btn-primary">Guardar</button>
                     &nbsp; &nbsp; &nbsp;
-                    <a href="/clientes">
+                    <a href="/control">
                         <button type="button" class="btn btn-danger">Cancelar</button> </a>
 
                 </form>

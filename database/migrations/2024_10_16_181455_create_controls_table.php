@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('vehiculo')->nullable();
             $table->string('placa')->nullable();
             $table->string('habitacion')->nullable();
-            $table->time('entrada')->nullable();
-            $table->time('salida')->nullable();
+            $table->string('entrada')->nullable();
+            $table->string('salida')->nullable();
             $table->double('tarifa')->nullable();
+            $table->integer('estado')->nullable();
             $table->timestamps();
         });
     }
