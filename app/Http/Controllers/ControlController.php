@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Control;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use PDF; 
 
 class ControlController extends Controller
 {
@@ -15,6 +16,40 @@ class ControlController extends Controller
     {
         $controles = Control::all();
         return view('control.index', compact('controles'));
+    }
+
+    public function reporte()
+    {
+        $controles = Control::all();
+        return view('reporte.index', compact('controles'));
+    }
+
+    public function reportedatos(Request $request)
+    {
+        $inicio = $request->get('inicio');
+        $fin = $request->get('fin');
+        //dd($inicio);
+        $controles = Control::whereBetween('created_at', [$inicio, $fin])
+       ->get();
+      //  $controles = Control::all();
+
+
+        return view('reporte.indexdatos', compact('controles', 'inicio', 'fin'));
+    }
+    public function reportedatospdf(Request $request)
+    {
+        $inicio = $request->get('inicio');
+        $fin = $request->get('fin');
+        //dd($inicio);
+        $controles = Control::whereBetween('created_at', [$inicio, $fin])
+       ->get();
+       // $controles = Control::all();
+
+        $pdf = PDF::loadView('reporte.indexdatospdf', ['controles'=>$controles])->setPaper('letter', 'landscape');;
+
+       return $pdf->stream();
+      //  return view('reporte.indexdatos', compact('controles', 'inicio', 'fin'));
+
     }
 
     /**

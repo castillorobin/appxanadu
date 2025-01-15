@@ -65,3 +65,8 @@ Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])
 Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');
 Route::get('/control/guardar', [App\Http\Controllers\ControlController::class, 'guardar'])->name('guardarcon');
 Route::get('/control/salida/{id}', [App\Http\Controllers\ControlController::class, 'salida'])->name('salidacon');
+
+// Reporte
+Route::get('/reporte', [App\Http\Controllers\ControlController::class, 'reporte'])->name('reportecontrol');
+Route::get('/reportecontrol', [App\Http\Controllers\ControlController::class, 'reportedatos'])->name('reportecontroldatos');
+Route::get('/reportecontrolpdf', [App\Http\Controllers\ControlController::class, 'reportedatospdf'])->name('reportecontroldatospdf');

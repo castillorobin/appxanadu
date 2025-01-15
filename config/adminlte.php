@@ -349,6 +349,11 @@ return [
             'url' => 'proveedores',
             'icon' => 'fas fa-truck',
         ],
+        [
+            'text' => 'Reportes',
+            'url' => 'reporte',
+            'icon' => 'fas fa-truck',
+        ],
 
        
         
