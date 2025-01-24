@@ -324,6 +324,11 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'Habitaciones',
+            'url' => 'habitacion',
+            'icon' => 'fas fa-hotel',
+        ],
+        [
             'text' => 'Clientes',
             'url' => 'clientes',
             'icon' => 'fas fa-fw fa-user',

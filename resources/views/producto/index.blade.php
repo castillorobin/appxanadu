@@ -62,9 +62,7 @@
                             <td>{{ $productos[$i]->Cantidad }}</td> 
                         
                             <td class="opciones text-center" style="">
-                                <a href="/producto/ver/{{ $productos[$i]->id }}">
-                                <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
-                            </a>           
+                                       
 
                             <a href="/producto/editar/{{ $productos[$i]->id }}">
                                 <button type="button" class="btn btn-warning"><i class="fas fa-edit"></i></button>

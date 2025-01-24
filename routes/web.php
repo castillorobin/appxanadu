@@ -64,9 +64,14 @@ Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaControlle
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
 Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');
 Route::get('/control/guardar', [App\Http\Controllers\ControlController::class, 'guardar'])->name('guardarcon');
-Route::get('/control/salida/{id}', [App\Http\Controllers\ControlController::class, 'salida'])->name('salidacon');
+Route::get('/control/salida/{id}/{habi}', [App\Http\Controllers\ControlController::class, 'salida'])->name('salidacon');
 
 // Reporte
 Route::get('/reporte', [App\Http\Controllers\ControlController::class, 'reporte'])->name('reportecontrol');
 Route::get('/reportecontrol', [App\Http\Controllers\ControlController::class, 'reportedatos'])->name('reportecontroldatos');
 Route::get('/reportecontrolpdf', [App\Http\Controllers\ControlController::class, 'reportedatospdf'])->name('reportecontroldatospdf');
+
+// Habitaciones
+Route::get('/habitacion', [App\Http\Controllers\HabitacionController::class, 'index'])->name('indexhabita');
+Route::get('/habitacion/crear', [App\Http\Controllers\HabitacionController::class, 'create'])->name('crearhabita');
+Route::get('/habitacion/guardar', [App\Http\Controllers\HabitacionController::class, 'guardar'])->name('guardarhabita');

@@ -56,7 +56,7 @@
                             <td class="opciones text-center" style="">
                             
 
-                                <a href="/control/salida/{{ $controles[$i]->id }}">
+                                <a href="/control/salida/{{ $controles[$i]->id }}/{{ $controles[$i]->habitacion }}">
                                 <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i>Salida</button>
                             </a>
                         

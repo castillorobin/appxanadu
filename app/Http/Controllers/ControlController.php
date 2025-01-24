@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Control;
 use App\Models\Producto;
+use App\Models\Habitacion;
 use Illuminate\Http\Request;
 use PDF; 
 
@@ -57,7 +58,7 @@ class ControlController extends Controller
      */
     public function create()
     {
-        $habitaciones = Producto::all();
+        $habitaciones = Habitacion::all();
         return view('control.crear', compact('habitaciones'));
     }
 
@@ -71,11 +72,15 @@ class ControlController extends Controller
         $control->tarifa = $request->get('tarifa');
         $control->estado = 1;
         $control->save();
+
+        $habitacion = Habitacion::find($request->get('habitacion'));
+        $habitacion->estado = 1;
+        $habitacion->save();
         $controles = Control::all();
         return view('control.index', compact('controles'));
     }
 
-    public function salida($id)
+    public function salida($id, $habi)
     {
         date_default_timezone_set('America/El_Salvador');
 
@@ -86,6 +91,11 @@ class ControlController extends Controller
 
         
         $ticketc->save();
+
+        $habitacion = Habitacion::find($habi);
+        $habitacion->estado = 0;
+        $habitacion->save();
+
         $controles = Control::all();
         return view('control.index', compact('controles'));
     }

@@ -51,8 +51,9 @@
                         <label class="form-label"># de Habitacion</label>
                         <select class="form-control js-example-basic-single produ" name="habitacion" id="habitacion" >
                             @foreach($habitaciones as $producto)
-                            <option value="{{$producto->Nombre}}">{{$producto->Nombre}}</option>
-                            
+                            @if($producto->estado == 0)
+                            <option value="{{$producto->id}}">Habitacion {{$producto->numero}}</option>
+                            @endif
                             
                             @endforeach
                             
