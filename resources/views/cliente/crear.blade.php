@@ -56,6 +56,11 @@
                         <label class="form-label">DUI</label>
                         <input type="text" class="form-control" id="dui" name="dui" placeholder="Ingrese el DUI">
                     </div>
+
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Placa</label>
+                        <input type="text" class="form-control" id="placa" name="placa" value="P">
+                    </div>
                     
 
 

@@ -45,10 +45,13 @@
   <input type="date" class="form-control" aria-label="Username" aria-describedby="basic-addon1" name="fin">
 </div>
                   </div>
-                  <div class="col-2">
+                  <div class="col-3">
                 
                  <button type="submit" class="btn btn-success"><i class="fas fa-file-alt"></i> &nbsp; Enviar</button>
                  </form>  
+                 <a href="/reporte/diario">
+                 <button type="button" class="btn btn-warning" style="margin-left: 20px;">Reporte Diario</button>
+                 </a>
                   </div>
                     </div>
                     <table id="clientes" class="table table-bordered shadow-lg mt-4 cell-border">

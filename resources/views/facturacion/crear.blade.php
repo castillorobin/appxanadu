@@ -40,9 +40,10 @@
 
         <div class="col-6 text-center">
          <h5>Santos Alberto Guerrero Beltran</h5>
-            <h4>MOTEL SANTORINI</h4>
-            <H5>17 Av. Sur y Calle Santa Cruz #7</H5>
-            <H5>Callejon Ferrocaril, Santa Ana</H5>
+            <h4>MOTEL XANADU</h4>
+            <H5>Carretera a los Naranjos</H5>
+            <H5>Cantón Cantarrana, Santa Ana</H5>
+            <H5>Tel.: 2429-0920</H5>
 
 
         </div>
@@ -77,7 +78,14 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Cliente</span>
-                        <input type="text" class="form-control" id="cliente" name="cliente" >
+                        <select class="form-control js-example-basic-single produ" name="cliente" id="cliente">
+                            @foreach($clientes as $cliente)
+                            <option value="{{$cliente->Nombre}}">{{$cliente->Nombre}}</option>
+                            
+                            
+                            @endforeach 
+                            
+                        </select>
                     </div>
                     </div>
     
@@ -126,18 +134,21 @@
                     <div class="mb-3 col-6">
                         <label class="form-label">Productos</label>
                         <select class="form-control js-example-basic-single produ" name="producto" id="producto" onChange="getComboA(this)">
+                        
                             @foreach($productos as $producto)
-                            <option value="{{$producto->id}}">{{$producto->Nombre}}</option>
+                            <option value="{{$producto->id}}">{{$producto->Nombre }} - {{$producto->Descripcion}} </option>
                             
                             
                             @endforeach 
                             
                         </select>
+
+                       
                     </div>
                   
                     <div class=" col-3 " >
                     
-                    
+                    <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
                     
                     </div>   
                 
@@ -213,6 +224,22 @@
 
 
 <script>
+
+function habitacion() {
+    
+//alert("producto");
+
+
+   // alert("Hola habitacion");
+    
+document.getElementById("existencia").value = 1;
+document.getElementById("detalle").value = "Habitacion";
+document.getElementById("precio").value = " ";
+document.getElementById("total").value = " " ;
+document.getElementById("cantidad").value = 1;
+
+
+}
     function getComboA(selectObject) {
 var id = selectObject.value;  
 //var cant = document.getElementById('can1').text; 
@@ -229,6 +256,8 @@ var preci = document.getElementById('pre' + id).value ;
 document.getElementById("precio").value = preci;
 
 document.getElementById("total").value = preci * canti ;
+
+
 
 
 }

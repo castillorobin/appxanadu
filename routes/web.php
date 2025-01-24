@@ -70,6 +70,7 @@ Route::get('/control/salida/{id}/{habi}', [App\Http\Controllers\ControlControlle
 Route::get('/reporte', [App\Http\Controllers\ControlController::class, 'reporte'])->name('reportecontrol');
 Route::get('/reportecontrol', [App\Http\Controllers\ControlController::class, 'reportedatos'])->name('reportecontroldatos');
 Route::get('/reportecontrolpdf', [App\Http\Controllers\ControlController::class, 'reportedatospdf'])->name('reportecontroldatospdf');
+Route::get('/reporte/diario', [App\Http\Controllers\ControlController::class, 'reportediario'])->name('reportediario');
 
 // Habitaciones
 Route::get('/habitacion', [App\Http\Controllers\HabitacionController::class, 'index'])->name('indexhabita');

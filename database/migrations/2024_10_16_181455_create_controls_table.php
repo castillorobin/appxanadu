@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('salida')->nullable();
             $table->double('tarifa')->nullable();
             $table->integer('estado')->nullable();
+            $table->date('fecha')->nullable();
             $table->timestamps();
         });
     }

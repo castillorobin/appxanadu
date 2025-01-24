@@ -43,10 +43,13 @@
   <input type="date" class="form-control" aria-label="Username" aria-describedby="basic-addon1" name="fin">
 </div>
                   </div>
-                  <div class="col-2">
+                  <div class="col-3">
                 
                  <button type="submit" class="btn btn-success"><i class="fas fa-file-alt"></i> &nbsp; Enviar</button>
                  </form>  
+                 <a href="/reporte/diario">
+                 <button type="button" class="btn btn-warning" style="margin-left: 20px;">Reporte Diario</button>
+                 </a>
                   </div>
                     </div>
 
@@ -70,7 +73,7 @@
                             @if($controles[$i]->estado == 0)
                             
                             <tr >
-                            <td>{{ date('d/m/Y', strtotime($controles[$i]->created_at))  }}</td>
+                            <td>{{ date('d/m/Y', strtotime($controles[$i]->fecha))  }}</td>
                            
                             <td>{{ $controles[$i]->vehiculo }}</td>
                             <td>{{ $controles[$i]->placa }}</td>

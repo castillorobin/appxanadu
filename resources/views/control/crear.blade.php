@@ -31,7 +31,7 @@
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Fecha</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ date('d-m-Y') }}" readonly>
+                        <input type="text" class="form-control" id="fecha" name="fecha" value="{{ date('d-m-Y') }}" readonly>
                     </div>
 
                     

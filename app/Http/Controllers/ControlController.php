@@ -6,6 +6,7 @@ use App\Models\Control;
 use App\Models\Producto;
 use App\Models\Habitacion;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use PDF; 
 
 class ControlController extends Controller
@@ -24,13 +25,23 @@ class ControlController extends Controller
         $controles = Control::all();
         return view('reporte.index', compact('controles'));
     }
+    public function reportediario()
+    {
+        $hoy = Carbon::now()->format('Y-m-d');
+        //dd($hoy);
+        $inicio= $hoy;
+        $fin= $hoy;
+        $controles = Control::whereBetween('fecha', [$inicio, $fin])
+       ->get();
+       return view('reporte.indexdatos', compact('controles', 'inicio', 'fin'));
+    }
 
     public function reportedatos(Request $request)
     {
         $inicio = $request->get('inicio');
         $fin = $request->get('fin');
         //dd($inicio);
-        $controles = Control::whereBetween('created_at', [$inicio, $fin])
+        $controles = Control::whereBetween('fecha', [$inicio, $fin])
        ->get();
       //  $controles = Control::all();
 
@@ -42,7 +53,7 @@ class ControlController extends Controller
         $inicio = $request->get('inicio');
         $fin = $request->get('fin');
         //dd($inicio);
-        $controles = Control::whereBetween('created_at', [$inicio, $fin])
+        $controles = Control::whereBetween('fecha', [$inicio, $fin])
        ->get();
        // $controles = Control::all();
 
@@ -64,6 +75,12 @@ class ControlController extends Controller
 
     public function guardar(Request $request)
     {
+        $date= Carbon::parse( $request->get('fecha'));
+        $fecha = $date->format('Y-m-d');
+       // $fechabuena = $fecha->format('Y-m-d');
+      //  $fecha1 = Carbon::createFromFormat('jmY', $fecha);;
+//dd($fecha);
+
         $control = new Control();
         $control->vehiculo = $request->get('vehiculo');
         $control->placa = $request->get('placa');
@@ -71,6 +88,7 @@ class ControlController extends Controller
         $control->entrada = $request->get('entrada');
         $control->tarifa = $request->get('tarifa');
         $control->estado = 1;
+        $control->fecha = $fecha;
         $control->save();
 
         $habitacion = Habitacion::find($request->get('habitacion'));
@@ -78,7 +96,7 @@ class ControlController extends Controller
         $habitacion->save();
         $controles = Control::all();
         return view('control.index', compact('controles'));
-    }
+    } 
 
     public function salida($id, $habi)
     {

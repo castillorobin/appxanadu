@@ -30,12 +30,13 @@ class ClienteController extends Controller
     public function store(Request $request)
     {
         $cliente = new Cliente();
-
+ 
         $cliente->Nombre = $request->get('nombre');
         $cliente->DUI = $request->get('dui');
         $cliente->Telefono = $request->get('telefono');
         $cliente->Correo = $request->get('correo');
         $cliente->Direccion = $request->get('direccion');
+        $cliente->placa = $request->get('placa');
         
         
         $cliente->save();

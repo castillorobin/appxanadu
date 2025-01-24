@@ -39,7 +39,8 @@ class FacturaController extends Controller
        $codigocoti = "C"."".$date."".$idcompr;
 
         $productos = Producto::all();
-        return view('facturacion.crear', compact('productos', 'codigocoti'));
+        $clientes = Cliente::all();
+        return view('facturacion.crear', compact('productos', 'codigocoti', 'clientes'));
     }
     public function ver($id)
     {
