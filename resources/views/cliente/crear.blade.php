@@ -58,6 +58,21 @@
                     </div>
 
                     <div class="mb-3 col-4">
+                        <label class="form-label">NRC</label>
+                        <input type="text" class="form-control" id="nrc" name="nrc" placeholder="Ingrese el NRC">
+                    </div>
+
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Giro</label>
+                        <input type="text" class="form-control" id="giro" name="giro" placeholder="Ingrese el Giro">
+                    </div>
+
+                    <div class="mb-3 col-4">
+                        <label class="form-label">Departamento</label>
+                        <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingrese el Departamento">
+                    </div>
+
+                    <div class="mb-3 col-4">
                         <label class="form-label">Placa</label>
                         <input type="text" class="form-control" id="placa" name="placa" value="P">
                     </div>

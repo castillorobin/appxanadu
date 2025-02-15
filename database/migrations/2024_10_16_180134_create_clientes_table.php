@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('Direccion')->nullable();
             $table->string('Correo')->nullable();
             $table->string('DUI')->nullable();
+            $table->string('NRC')->nullable();
+            $table->string('giro')->nullable();
+            $table->string('departamento')->nullable();
             $table->string('placa')->nullable();
             $table->timestamps();
         });

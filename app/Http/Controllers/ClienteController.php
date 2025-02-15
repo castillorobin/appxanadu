@@ -37,6 +37,9 @@ class ClienteController extends Controller
         $cliente->Correo = $request->get('correo');
         $cliente->Direccion = $request->get('direccion');
         $cliente->placa = $request->get('placa');
+        $cliente->nrc = $request->get('nrc');
+        $cliente->giro = $request->get('giro');
+        $cliente->departamento = $request->get('departamento');
         
         
         $cliente->save();
