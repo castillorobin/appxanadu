@@ -145,7 +145,7 @@
                   
                     <div class=" col-3 " >
                     
-                    
+                    <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
                     
                     </div>   
              
@@ -212,7 +212,7 @@
         <td>{{ $detalles[$i]->descripcion }}</td>
        
         <td>{{ $detalles[$i]->cantidad }}</td>
-        <td>${{ $detalles[$i]->preciouni }}</td>
+        <td>${{ $detalles[$i]->total }}</td>
         <td>${{ $detalles[$i]->total }}</td>
         {{ $subtotal = $subtotal + $detalles[$i]->total }}
     
@@ -221,11 +221,13 @@
             <a href="/cotizacion/borrardet/{{ $detalles[$i]->id }}">
             <button type="button" class="btn btn-danger">Borrar</button>
             </a>
-
+            @if($detalles[$i]->descripcion == "Habitacion")
+        {{ $turismo= $detalles[$i]->preciouni * 0.05 }}
+        @endif
         </td>
         </tr>
         @endfor
-        {{ $turismo= $subtotal * 0.05 }}
+           
         <tr >
             <td style="text-align: center; border: 0px solid black; "></td>
             <td style="text-align: center; border: 0px solid black; "></td>
@@ -292,6 +294,23 @@
 
 
 <script>
+
+function habitacion() {
+    
+    //alert("producto");
+    
+    
+       // alert("Hola habitacion");
+        
+    document.getElementById("existencia").value = 1;
+    document.getElementById("detalle").value = "Habitacion";
+    document.getElementById("precio").value = " ";
+    document.getElementById("total").value = " " ;
+    document.getElementById("cantidad").value = 1;
+    
+    
+    }
+
     function getComboA(selectObject) {
 var id = selectObject.value;  
 //var cant = document.getElementById('can1').text; 

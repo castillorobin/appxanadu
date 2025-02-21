@@ -149,7 +149,7 @@
                     <div class=" col-3 " >
                     
                     <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
-                    
+                     
                     </div>   
                 
         </div>
@@ -263,11 +263,17 @@ document.getElementById("total").value = preci * canti ;
 }
 
 function totalizar() {
-
+    var deta = document.getElementById("detalle").value;
     var canti = document.getElementById("cantidad").value ;
     var preci = document.getElementById('precio').value ;
+    if (deta == "Habitacion") {
+        var impu = preci * 0.05 ;
+        document.getElementById("total").value = preci - impu ;
+    }else{
+        document.getElementById("total").value = preci * canti ;
+    }
+    
 
-    document.getElementById("total").value = preci * canti ;
 
 }
 

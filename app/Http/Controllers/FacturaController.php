@@ -149,7 +149,7 @@ class FacturaController extends Controller
         $detalle->total = $request->get('total');
        
         $detalle->save();
-        
+         
         
 
         $cotiactual = Factura::where('codigo', $codigo)->get();
