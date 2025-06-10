@@ -267,8 +267,8 @@
 <a href="/facturacion">
                     <button type="button" class="btn btn-danger">Cancelar</button> </a>
 &nbsp; &nbsp; &nbsp;
-<a href="https://xanadusistema.com/consumidordte.php">
-                    <button type="button" class="btn btn-primary">Facturar</button></a>
+<a href="/facturacion/verpdf/{{ $cotiactual[0]->codigo}}">
+                    <button type="button" class="btn btn-primary">Imprimir</button></a>
 
                
                 </div>
