@@ -38,9 +38,10 @@
 
         <div class="col-6 text-center">
          <h5>Santos Alberto Guerrero Beltran</h5>
-            <h4>MOTEL SANTORINI</h4>
-            <H5>17 Av. Sur y Calle Santa Cruz #7</H5>
-            <H5>Callejon Ferrocaril, Santa Ana</H5>
+            <h4>MOTEL XANADU</h4>
+            <H5>Carretera a los Naranjos</H5>
+            <H5>Cantón Cantarrana, Santa Ana</H5>
+            <H5>Tel.: 2429-0920</H5>
 
 
         </div>
@@ -53,7 +54,7 @@
             <h5 >NIT 0509-021159-101-0</h5>
         </div>  
 
-
+ 
 </div>
 
         <div class="row my-2">
@@ -61,7 +62,7 @@
             <div class="col-3">
                 <div class="input-group">
                     <span class="input-group-text">Fecha</span>
-                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{ $cotiactual[0]->fecha}}" readonly>
+                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{date('d/m/Y',strtotime($cotiactual[0]->created_at))}}" readonly>
                 </div>
                 </div>
             </div>
@@ -218,11 +219,11 @@
     
         <td class="opciones text-center" style="">
            
-            <a href="/cotizacion/borrardet/{{ $detalles[$i]->id }}">
+            <a href="/facturacion/borrardet/{{ $detalles[$i]->id }}">
             <button type="button" class="btn btn-danger">Borrar</button>
             </a>
-            @if($detalles[$i]->descripcion == "Habitacion")
-        {{ $turismo= $detalles[$i]->preciouni * 0.05 }}
+            @if($detalles[$i]->descripcion == 'Habitacion')
+       <input type="text" value="{{ $turismo= ($detalles[$i]->preciouni / 1.05)* 0.05 }}" hidden> 
         @endif
         </td>
         </tr>
@@ -263,11 +264,12 @@
 
     </table>
                     
+    <input type="text" class="form-control" id="codigo" name="codigo" value="{{ $cotiactual[0]->codigo}}" hidden>
 <hr>
 <a href="/facturacion">
                     <button type="button" class="btn btn-danger">Cancelar</button> </a>
 &nbsp; &nbsp; &nbsp;
-<a href="https://xanadusistema.com/consumidordte.php">
+<a href="/facturacion/generardteconsumidor/{{ $cotiactual[0]->codigo}}">
                     <button type="button" class="btn btn-primary">Facturar</button></a>
 
                
@@ -356,5 +358,4 @@ document.getElementById("unirecarga").value = total ;
 
 </script>
 @endsection
-
 

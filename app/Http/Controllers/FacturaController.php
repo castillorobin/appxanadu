@@ -88,25 +88,32 @@ class FacturaController extends Controller
     }
     public function detalleconcabe(Request $request)
     {
-
-        $ultimoid = Factura::latest('id')->first();
+$ultimoid = Factura::latest('id')->first();
        $idcompr = $ultimoid->id + 1;
        $date = Carbon::now();
             $date = $date->format('Y');
             $codigo = "$date".$idcompr;
         
-            $newDate = date("Y/m/d", strtotime($request->get('fecha')));
+            //$newDate = date("Y-m-d", strtotime($request->get('fecha')));
+         //   $newDate = DateTime::createFromFormat('Y-m-d', date('Y-m-d', strtotime($request->get('fecha'))));
+
+
+
+
+
+        //  dd($newDate->format('Y-m-d'));
+
+
         $cotienca = new Factura();
         $cotienca->cliente = $request->get('cliente');
         $cotienca->codigo = $codigo;
-        $cotienca->fecha = $newDate;
+       // $cotienca->fecha = $newDate->format('Y-m-d');
         
         $cotienca->DUI = $request->get('dui');
         $cotienca->direccion = $request->get('direccion');
         
 
         $cotienca->save();
-
         $cotiactual = Factura::where('codigo', $codigo)->get();
 
        $linea = new Cotidetalle();
@@ -163,11 +170,27 @@ class FacturaController extends Controller
 
      public function borrardet($id)
     {
+        $detalle = Cotidetalle::where('id', $id)->get();
+        //dd($detalle);
+        $codigo = $detalle[0]->coticode;
         Cotidetalle::find($id)->delete();
-        $detalles = Cotidetalle::all();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
        $clientes = Cliente::all();
         $productos = Producto::all();
-       return view('facturacion.agregardetalle', compact('clientes', 'productos', 'detalles'));
+
+        $cotiactual = Factura::where('codigo', $codigo)->get();
+       return view('facturacion.agregardetalle', compact('clientes', 'productos', 'detalles', 'cotiactual'));
+    }
+
+    public function generardteconsumidor($codigo)
+    {
+        $factura = Factura::where('codigo', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+
+        $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
+
+        $actual = $factura[0]->codigo;
+        return view('facturacion.generardteconsumidor', compact('actual', 'detalles', 'cliente'));
     }
 
     /**

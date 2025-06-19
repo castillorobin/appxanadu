@@ -359,6 +359,17 @@ return [
             'url' => 'reporte',
             'icon' => 'fas fa-truck',
         ],
+         [
+            'text' => 'Credito Fiscal',
+            'url' => '/',
+            'icon' => 'fas fa-truck',
+        ],
+        [
+            'text' => 'No gravadas',
+            'url' => '/',
+            'icon' => 'fas fa-truck',
+        ],
+
 
        
         

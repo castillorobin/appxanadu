@@ -61,7 +61,7 @@
             <div class="col-3">
                 <div class="input-group">
                     <span class="input-group-text">Fecha</span>
-                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{ $cotiactual[0]->fecha}}" readonly>
+                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{date('d/m/Y',strtotime($cotiactual[0]->created_at))}}" readonly>
                 </div>
                 </div>
             </div>
@@ -218,11 +218,11 @@
     
         <td class="opciones text-center" style="">
            
-            <a href="/cotizacion/borrardet/{{ $detalles[$i]->id }}">
+            <a href="/facturacion/borrardet/{{ $detalles[$i]->id }}">
             <button type="button" class="btn btn-danger">Borrar</button>
             </a>
-            @if($detalles[$i]->descripcion == "Habitacion")
-        {{ $turismo= $detalles[$i]->preciouni * 0.05 }}
+            @if($detalles[$i]->descripcion == 'Habitacion')
+       <input type="text" value="{{ $turismo= ($detalles[$i]->preciouni / 1.05)* 0.05 }}" hidden> 
         @endif
         </td>
         </tr>
@@ -263,12 +263,13 @@
 
     </table>
                     
+    <input type="text" class="form-control" id="codigo" name="codigo" value="{{ $cotiactual[0]->codigo}}" hidden>
 <hr>
 <a href="/facturacion">
                     <button type="button" class="btn btn-danger">Cancelar</button> </a>
 &nbsp; &nbsp; &nbsp;
-<a href="/facturacion/verpdf/{{ $cotiactual[0]->codigo}}">
-                    <button type="button" class="btn btn-primary">Imprimir</button></a>
+<a href="/facturacion/generardteconsumidor/{{ $cotiactual[0]->codigo}}">
+                    <button type="button" class="btn btn-primary">Facturar</button></a>
 
                
                 </div>
@@ -356,5 +357,4 @@ document.getElementById("unirecarga").value = total ;
 
 </script>
 @endsection
-
 
