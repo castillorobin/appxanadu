@@ -223,7 +223,7 @@
             <button type="button" class="btn btn-danger">Borrar</button>
             </a>
             @if($detalles[$i]->descripcion == 'Habitacion')
-       <input type="text" value="{{ $turismo= ($detalles[$i]->preciouni / 1.05)* 0.05 }}" hidden> 
+       <input type="text" value="{{ $turismo= ($detalles[$i]->preciouni / 1.18) * 0.05 }}" hidden> 
         @endif
         </td>
         </tr>

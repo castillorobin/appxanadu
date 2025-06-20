@@ -64,7 +64,7 @@
                         
                         <div class="input-group">
                             <span class="input-group-text">Fecha</span>
-                            <input class="form-control form-control-transparent fw-bold pe-5" value="{{ date("d/m/Y") }}" name="fecha"/>
+                            <input class="form-control form-control-transparent fw-bold pe-5" value="{{ date('d/m/Y') }}" name="fecha"/>
  
                         </div>
                     </div>
@@ -267,7 +267,15 @@ function totalizar() {
     var canti = document.getElementById("cantidad").value ;
     var preci = document.getElementById('precio').value ;
     if (deta == "Habitacion") {
-        var impu = preci * 0.05 ;
+        var impu2 = preci / 1.18 ;
+        var impu3 = impu2 * 0.13 ;
+        var impu5 = impu2 + impu3;
+        var impu4 = impu2 * 0.05 ;
+
+        impu6 = impu4.toFixed(2);
+       var impu = parseFloat(impu6);
+       // var impu = impu4 ;
+
         document.getElementById("total").value = preci - impu ;
     }else{
         document.getElementById("total").value = preci * canti ;

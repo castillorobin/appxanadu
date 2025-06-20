@@ -266,7 +266,7 @@ foreach ($detalles as $detalle) {
     $dte->resumen->montoTotalOperacion = 7;
     $dte->resumen->totalNoGravado = 0.00;
     $dte->resumen->totalPagar = 7;
-    $dte->resumen->totalLetras = "SIETE DÓLARES 65/100";
+    $dte->resumen->totalLetras = "SIETE DÓLARES 00/100";
     $dte->resumen->totalIva = 0.80;
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
