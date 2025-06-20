@@ -200,8 +200,8 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->emisor->direccion = new Direccion();
     $dte->emisor->direccion->departamento = "02";
     $dte->emisor->direccion->municipio = "01";
-    $dte->emisor->direccion->complemento = "CARRETERA A LOS NARANJOS, SANTA ANA CENTRO";
-    $dte->emisor->telefono = "2309-3642";
+    $dte->emisor->direccion->complemento = "Carretera a los naranjos, Lotificacion San Fernando #3 Poligono B";
+    $dte->emisor->telefono = "2429-0920";
     $dte->emisor->codEstableMH = null;
     $dte->emisor->codEstable = null;
     $dte->emisor->codPuntoVentaMH = null;
@@ -363,7 +363,7 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-header("Refresh: 3; url=https://motelsantorini.site/facturacion");
+header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 //header("Refresh: 3; url=http://127.0.0.1:8000/facturacion");
 
 ?>
