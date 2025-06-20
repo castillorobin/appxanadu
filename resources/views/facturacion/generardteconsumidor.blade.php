@@ -262,20 +262,9 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $item->tributos = null;
     $item->psv = $detalle->preciouni;
     $item->noGravado = 0;
-    $item->ivaItem = round($detalle->preciouni - ($detalle->preciouni / 1.18) , 2) ;
-    $item->tributos = [
-      [
-        "codigo"=>"20",
-        "descripcion"=>"IVA 13%",
-        "valor"=>round(($detalle->preciouni / 1.18) * 0.13 , 2) 
-      ],
-      [
-        "codigo"=>"22",
-        "descripcion"=>"Contribución Especial para el Turismo 5%",
-        "valor"=>round(($detalle->preciouni / 1.18) * 0.05 , 2) 
-      ]
-      ];
-
+    $item->ivaItem = 1.22 ;
+    $item->tributos =[59];
+//dd(round(($detalle->preciouni / 1.18) * 0.13 , 2) );
     $dte->cuerpoDocumento = [$item];
 }
 
@@ -301,6 +290,19 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->resumen->totalIva = round(sacarivas($detalles), 2);   
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
+    $dte->resumen->tributos = [
+      [
+        "codigo" => "20",
+        "descripcion" => "Impuesto al Valor Agregado 13%",
+        "valor" => "0.88"
+        
+      ],
+      [
+        "codigo" => "59",
+        "descripcion" => "Contribución Especial para el Turismo 5%",
+        "valor" => "0.34"
+      ]
+      ];
     $dte->resumen->pagos = [
         [
             "codigo"=>"01",
