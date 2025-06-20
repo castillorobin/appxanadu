@@ -24,6 +24,21 @@ function getGUID(){
 }
 
 
+function sacarivas($detalles){
+    $iva = 0;
+    foreach ($detalles as $detalle) {
+    if ($detalle->descripcion = "Habitacion" ){
+        $iva = $iva + (($detalle->preciouni / 1.18) * 0.13);
+         $iva = $iva + (($detalle->preciouni / 1.18) * 0.05);
+    }else{
+       $iva = $iva + (($detalle->preciouni / 1.13) * 0.13);
+    }
+return $iva;
+    }
+}
+
+
+
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 1;
@@ -61,6 +76,7 @@ class Emisor {
     public $codPuntoVentaMH;
     public $codPuntoVenta;
     public $correo;
+    //public $tributos;
 }
 
 class Receptor {
@@ -93,6 +109,7 @@ class ItemDocumento {
     public $psv;
     public $ivaItem;
     public $noGravado;
+
 }
 
 class Pago {
@@ -232,48 +249,62 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $item->numItem = 1;
     $item->tipoItem = 1;
     $item->numeroDocumento = null;
-    $item->cantidad = 1;
+    $item->cantidad = $detalle->cantidad;
     $item->codigo = "1";
     $item->codTributo = null;
     $item->uniMedida = 1;
     $item->descripcion = $detalle->descripcion;
-    $item->precioUni = 7;
+    $item->precioUni = $detalle->preciouni;
     $item->montoDescu = 0;
     $item->ventaNoSuj = 0;
     $item->ventaExenta = 0;
-    $item->ventaGravada = 7;
+    $item->ventaGravada = $detalle->preciouni;
     $item->tributos = null;
-    $item->psv = 7;
+    $item->psv = $detalle->preciouni;
     $item->noGravado = 0;
-    $item->ivaItem = 0.80;
+    $item->ivaItem = round($detalle->preciouni - ($detalle->preciouni / 1.18) , 2) ;
+    $item->tributos = [
+      [
+        "codigo"=>"20",
+        "descripcion"=>"IVA 13%",
+        "valor"=>round(($detalle->preciouni / 1.18) * 0.13 , 2) 
+      ],
+      [
+        "codigo"=>"22",
+        "descripcion"=>"Contribución Especial para el Turismo 5%",
+        "valor"=>round(($detalle->preciouni / 1.18) * 0.05 , 2) 
+      ]
+      ];
+
     $dte->cuerpoDocumento = [$item];
 }
+
     // Configurar resumen
     $dte->resumen = new Resumen();
     $dte->resumen->totalNoSuj = 0.00;
     $dte->resumen->totalExenta = 0.00;
-    $dte->resumen->totalGravada = 7;
-    $dte->resumen->subTotalVentas = 7;
+    $dte->resumen->totalGravada = $detalle->preciouni;
+    $dte->resumen->subTotalVentas = $detalle->preciouni;
     $dte->resumen->descuNoSuj = 0.00;
     $dte->resumen->descuExenta = 0.00;
     $dte->resumen->descuGravada = 0.00;
     $dte->resumen->porcentajeDescuento = 0.00;
     $dte->resumen->totalDescu = 0.00;
-    $dte->resumen->subTotal = 7;
+    $dte->resumen->subTotal = $detalle->preciouni;
     $dte->resumen->ivaRete1 = 0.00;
    // $dte->resumen->ivaPerci1 = 0.00;
     $dte->resumen->reteRenta = 0.00;
-    $dte->resumen->montoTotalOperacion = 7;
+    $dte->resumen->montoTotalOperacion = $detalle->preciouni;
     $dte->resumen->totalNoGravado = 0.00;
-    $dte->resumen->totalPagar = 7;
+    $dte->resumen->totalPagar = $detalle->preciouni;
     $dte->resumen->totalLetras = "SIETE DÓLARES 00/100";
-    $dte->resumen->totalIva = 0.80;
+    $dte->resumen->totalIva = round(sacarivas($detalles), 2);   
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
     $dte->resumen->pagos = [
         [
             "codigo"=>"01",
-            "montoPago"=>7,
+            "montoPago"=>$detalle->preciouni,
             "referencia"=>"0000",
             "periodo"=>null,
             "plazo"=>null
@@ -363,7 +394,7 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-header("Refresh: 3; url=https://xanadusistema.com/facturacion");
+//header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 //header("Refresh: 3; url=http://127.0.0.1:8000/facturacion");
 
 ?>
