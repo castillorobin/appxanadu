@@ -224,7 +224,7 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->receptor->correo = $cliente[0]->Correo;
 
    
-foreach ($detalles as $detalle) {
+    foreach ($detalles as $detalle) {
    
 
     // Configurar cuerpo del documento
@@ -284,12 +284,12 @@ foreach ($detalles as $detalle) {
 
     // Configurar extensión
     $dte->extension = new Extension();
-    $dte->extension->nombEntrega = "Juan Pérez";
-    $dte->extension->docuEntrega = "06143110171029";
-    $dte->extension->nombRecibe = "Carlos López";
-    $dte->extension->docuRecibe = "04332010181019";
-    $dte->extension->observaciones = "Entrega en bodega principal";
-    $dte->extension->placaVehiculo = "P123-456";
+    $dte->extension->nombEntrega = null;
+    $dte->extension->docuEntrega = null;
+    $dte->extension->nombRecibe = null;
+    $dte->extension->docuRecibe = null;
+    $dte->extension->observaciones = null;
+    $dte->extension->placaVehiculo = null;
 
     return $dte;
     
