@@ -24,19 +24,73 @@ function getGUID(){
 }
 
 function numeroALetras($numero) {
-    $formatter = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
-    
+    $unidad = [
+        '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
+        'diez', 'once', 'doce', 'trece', 'catorce', 'quince',
+        'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte'
+    ];
+
+    $decenas = [
+        '', '', 'veinti', 'treinta', 'cuarenta', 'cincuenta',
+        'sesenta', 'setenta', 'ochenta', 'noventa'
+    ];
+
+    $centenas = [
+        '', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos',
+        'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'
+    ];
+
+    if ($numero == 0) return 'Cero dólares 00/100';
+
     $entero = floor($numero);
     $centavos = round(($numero - $entero) * 100);
 
-    $letras = $formatter->format($entero);
-    $letras = ucfirst($letras) . " dólares";
+    $letras = '';
 
-    if ($centavos > 0) {
-        $letras .= " con " . str_pad($centavos, 2, "0", STR_PAD_LEFT) . "/100";
-    } else {
-        $letras .= " 00/100";
+    if ($entero >= 1000000) {
+        $millones = floor($entero / 1000000);
+        $letras .= numeroALetras($millones) . ' millón' . ($millones > 1 ? 'es' : '') . ' ';
+        $entero %= 1000000;
     }
+
+    if ($entero >= 1000) {
+        $miles = floor($entero / 1000);
+        if ($miles == 1) {
+            $letras .= 'mil ';
+        } else {
+            $letras .= numeroALetras($miles) . ' mil ';
+        }
+        $entero %= 1000;
+    }
+
+    if ($entero > 0) {
+        if ($entero == 100) {
+            $letras .= 'cien';
+        } else {
+            $c = floor($entero / 100);
+            $d = floor(($entero % 100) / 10);
+            $u = $entero % 10;
+
+            $letras .= $centenas[$c];
+
+            if ($d == 1 || ($d == 2 && $u == 0)) {
+                $letras .= ($c > 0 ? ' ' : '') . $unidad[$d * 10 + $u];
+            } elseif ($d == 2) {
+                $letras .= 'i' . $unidad[$u];
+            } elseif ($d > 2) {
+                $letras .= ($c > 0 ? ' ' : '') . $decenas[$d];
+                if ($u > 0) {
+                    $letras .= ' y ' . $unidad[$u];
+                }
+            } elseif ($u > 0) {
+                $letras .= ($c > 0 ? ' ' : '') . $unidad[$u];
+            }
+        }
+    }
+
+    $letras = trim(ucfirst($letras)) . ' dólares';
+
+    $letras .= ' con ' . str_pad($centavos, 2, '0', STR_PAD_LEFT) . '/100';
 
     return $letras;
 }
