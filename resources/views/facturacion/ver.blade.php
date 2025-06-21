@@ -61,7 +61,7 @@
             <div class="col-3">
                 <div class="input-group">
                     <span class="input-group-text">Fecha</span>
-                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{ $cotiactual[0]->fecha}}" readonly>
+                    <input type="text" class="form-control" id="fecha" name="fecha" value="{{date('d/m/Y',strtotime($cotiactual[0]->created_at))}}" readonly>
                 </div>
                 </div>
             </div>

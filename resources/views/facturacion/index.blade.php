@@ -43,7 +43,7 @@
                             @for ($i=0; $i< count($cotizaciones); $i++)
                             <tr >
                             <td>{{ $cotizaciones[$i]->codigo }}</td>
-                            <td>{{ $cotizaciones[$i]->fecha }}</td>
+                            <td>{{date('d/m/Y',strtotime($cotizaciones[$i]->created_at))}}</td>
                             <td>{{ $cotizaciones[$i]->cliente }}</td>
                             <td>{{ $cotizaciones[$i]->direccion }}</td>
                             
