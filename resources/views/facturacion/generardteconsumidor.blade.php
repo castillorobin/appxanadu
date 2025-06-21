@@ -23,18 +23,41 @@ function getGUID(){
     }
 }
 
+function numeroALetras($numero) {
+    $formatter = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
+    
+    $entero = floor($numero);
+    $centavos = round(($numero - $entero) * 100);
+
+    $letras = $formatter->format($entero);
+    $letras = ucfirst($letras) . " dólares";
+
+    if ($centavos > 0) {
+        $letras .= " con " . str_pad($centavos, 2, "0", STR_PAD_LEFT) . "/100";
+    } else {
+        $letras .= " 00/100";
+    }
+
+    return $letras;
+}
 
 function sacarivas($detalles){
     $iva = 0;
     foreach ($detalles as $detalle) {
-    if ($detalle->descripcion = "Habitacion" ){
-        $iva = $iva + (($detalle->preciouni / 1.18) * 0.13);
-         $iva = $iva + (($detalle->preciouni / 1.18) * 0.05);
-    }else{
-       $iva = $iva + (($detalle->preciouni / 1.13) * 0.13);
+        $iva += $detalle->preciouni;
+
     }
-return $iva;
+   $ivatotal = (($iva / 1.13) * 0.13);
+    return $ivatotal;
+}
+
+function sacartotal($detalles){
+    $total = 0;
+    foreach ($detalles as $detalle) {
+        $total += $detalle->preciouni;
+
     }
+    return $total;
 }
 
 
@@ -175,26 +198,11 @@ class DocumentoTributarioElectronico {
 date_default_timezone_set('America/El_Salvador');
 $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
-/*
-$nombre = $cliente[0]->Nombre;
-$direccion= $cliente[0]->Direccion;
-$telefono = $cliente[0]->Telefono;
-$correo = $cliente[0]->Correo;
-*/
- //echo $nombre;
-
-//echo $fecha_actual;
 
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
-  //  global $fecha_actual;
-   // global $hora_actual;
-   // global $nombre, $direccion, $telefono, $correo;
-//$fecha_actual = "Holllla";
-
-//echo $cliente[0]->Nombre;
-   // echo $fecha_actual;
+ 
     
     $dte = new DocumentoTributarioElectronico();
     
@@ -240,13 +248,16 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->receptor->telefono = $cliente[0]->Telefono;
     $dte->receptor->correo = $cliente[0]->Correo;
 
-   
+$cuerpo = [];
+$totalGravada = 0;
+$itemnum = 1;
     foreach ($detalles as $detalle) {
    
 
     // Configurar cuerpo del documento
     $item = new ItemDocumento();
-    $item->numItem = 1;
+    $item->numItem = $itemnum;
+    $itemnum += 1;
     $item->tipoItem = 1;
     $item->numeroDocumento = null;
     $item->cantidad = $detalle->cantidad;
@@ -254,59 +265,51 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $item->codTributo = null;
     $item->uniMedida = 1;
     $item->descripcion = $detalle->descripcion;
-    $item->precioUni = $detalle->preciouni;
+    $item->precioUni = round($detalle->preciouni, 2);
     $item->montoDescu = 0;
     $item->ventaNoSuj = 0;
     $item->ventaExenta = 0;
-    $item->ventaGravada = $detalle->preciouni;
-    $item->tributos = null;
-    $item->psv = $detalle->preciouni;
+    $item->ventaGravada = round($detalle->preciouni, 2);
+    $totalGravada += $item->ventaGravada;
+    $cuerpo[] = $item;
+    $item->psv = round($detalle->preciouni, 2);
     $item->noGravado = 0;
-    $item->ivaItem = 1.22 ;
-    $item->tributos =[59];
-//dd(round(($detalle->preciouni / 1.18) * 0.13 , 2) );
+    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);  
     $dte->cuerpoDocumento = [$item];
 }
+$dte->cuerpoDocumento = $cuerpo;
+
 
     // Configurar resumen
     $dte->resumen = new Resumen();
     $dte->resumen->totalNoSuj = 0.00;
     $dte->resumen->totalExenta = 0.00;
-    $dte->resumen->totalGravada = $detalle->preciouni;
-    $dte->resumen->subTotalVentas = $detalle->preciouni;
+    $dte->resumen->totalGravada = round($totalGravada, 2);
+   //dd(round(sacartotal($detalles), 2));
     $dte->resumen->descuNoSuj = 0.00;
+    $dte->resumen->subTotalVentas = round($totalGravada, 2);
     $dte->resumen->descuExenta = 0.00;
     $dte->resumen->descuGravada = 0.00;
     $dte->resumen->porcentajeDescuento = 0.00;
     $dte->resumen->totalDescu = 0.00;
-    $dte->resumen->subTotal = $detalle->preciouni;
+    $dte->resumen->subTotal = round($totalGravada, 2);
     $dte->resumen->ivaRete1 = 0.00;
-   // $dte->resumen->ivaPerci1 = 0.00;
     $dte->resumen->reteRenta = 0.00;
-    $dte->resumen->montoTotalOperacion = $detalle->preciouni;
+    $dte->resumen->montoTotalOperacion = round($totalGravada, 2);
     $dte->resumen->totalNoGravado = 0.00;
-    $dte->resumen->totalPagar = $detalle->preciouni;
-    $dte->resumen->totalLetras = "SIETE DÓLARES 00/100";
-    $dte->resumen->totalIva = round(sacarivas($detalles), 2);   
+    $dte->resumen->totalPagar = round($totalGravada, 2);
+    $total = round($totalGravada, 2);
+    //$dte->resumen->totalLetras = " DÓLARES 00/100";
+    $dte->resumen->totalLetras = numeroALetras($total);
+    $dte->resumen->totalIva = round(sacarivas($detalles), 2);
+
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
-    $dte->resumen->tributos = [
-      [
-        "codigo" => "20",
-        "descripcion" => "Impuesto al Valor Agregado 13%",
-        "valor" => "0.88"
-        
-      ],
-      [
-        "codigo" => "59",
-        "descripcion" => "Contribución Especial para el Turismo 5%",
-        "valor" => "0.34"
-      ]
-      ];
+   
     $dte->resumen->pagos = [
         [
             "codigo"=>"01",
-            "montoPago"=>$detalle->preciouni,
+            "montoPago"=>$totalGravada,
             "referencia"=>"0000",
             "periodo"=>null,
             "plazo"=>null
@@ -396,7 +399,6 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-//header("Refresh: 3; url=https://xanadusistema.com/facturacion");
-//header("Refresh: 3; url=http://127.0.0.1:8000/facturacion");
+
 
 ?>
