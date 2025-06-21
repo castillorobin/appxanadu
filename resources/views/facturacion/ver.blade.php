@@ -140,11 +140,13 @@
         <td>${{ $detalles[$i]->total }}</td>
         
         {{ $subtotal = $subtotal + $detalles[$i]->total }}
-       
+         @if($detalles[$i]->descripcion == 'Habitacion')
+       <input type="text" value="{{ $turismo= ($detalles[$i]->preciouni / 1.18) * 0.05 }}" hidden> 
+        @endif
         </tr>
         @endfor
 
-        {{ $turismo= $subtotal * 0.05 }}
+    
         <tr >
             <td style="text-align: center; border: 0px solid black; "></td>
             <td style="text-align: center; border: 0px solid black; "></td>

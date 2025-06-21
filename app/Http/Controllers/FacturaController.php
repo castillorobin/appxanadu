@@ -16,7 +16,9 @@ class FacturaController extends Controller
      */
     public function index()
     {
-        $cotizaciones = Factura::all();
+        $cotizaciones2 = Factura::all();
+        $cotizaciones = $cotizaciones2->sortByDesc('created_at');
+
         return view('facturacion.index', compact('cotizaciones'));
     }
 
