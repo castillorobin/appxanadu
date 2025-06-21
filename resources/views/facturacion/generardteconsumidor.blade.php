@@ -399,6 +399,6 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-
+header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
