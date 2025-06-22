@@ -256,13 +256,13 @@ $hora_actual = date("h:i:s");
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
- 
+ $paradte = 90000000000 + $detalles[0]->id;
     
     $dte = new DocumentoTributarioElectronico();
     
     // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-01-F0000001-000080000000". rand ( 100 , 999 );
+    $dte->identificacion->numeroControl = "DTE-01-F0000001-0000". $paradte;  //DTE-01-F0000001-000080000000263
     $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF1AF-7DF7-436F-B9AE-47CA46035F1B";
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
