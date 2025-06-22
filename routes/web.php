@@ -26,8 +26,9 @@ Route::get('/producto/ver/{id}', [App\Http\Controllers\ProductoController::class
 Route::get('/producto/crear', [App\Http\Controllers\ProductoController::class, 'create'])->name('crearpr');
 Route::get('/producto/guardar', [App\Http\Controllers\ProductoController::class, 'store'])->name('guardarpr');
 Route::get('/producto/borrar/{id}', [App\Http\Controllers\ProductoController::class, 'destroy'])->name('borrarpr');
-Route::get('/producto/editar/{id}', [App\Http\Controllers\ProductoController::class, 'edit'])->name('editarpr');
+Route::get('/producto/editar/{id}', [App\Http\Controllers\ProductoController::class, 'editar'])->name('editarpr');
 Route::get('/producto/update/{id}', [App\Http\Controllers\ProductoController::class, 'update'])->name('updatepr');
+Route::get('/producto/editando', [App\Http\Controllers\ProductoController::class, 'editando'])->name('editandopr');
 
 //Compras
 Route::get('/compras', [App\Http\Controllers\CompraController::class, 'index'])->name('indexcomp');

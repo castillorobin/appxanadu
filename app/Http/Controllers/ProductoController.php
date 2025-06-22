@@ -46,6 +46,35 @@ class ProductoController extends Controller
         return view('producto.index', compact('productos'));
     }
 
+    public function editar($id)
+    {
+       // $proveedores = Proveedor::all();
+
+       $producto = Producto::find($id);
+
+        return view('producto.editar', compact('producto'));
+    }
+
+     public function editando(Request $request)
+    {
+       // $proveedores = Proveedor::all();
+        $id = $request->get('id');
+         $envio = Producto::find($id);
+        $envio->Nombre = $request->get('nombre');
+        $envio->Descripcion = $request->get('descripcion');
+        $envio->Categoria = $request->get('categoria');
+        $envio->Proveedor = $request->get('proveedor');
+        $envio->Precio = $request->get('precio');
+        $envio->Cantidad = $request->get('cantidad');
+        $envio->Unidad_medida = $request->get('unidad');
+        $envio->save();
+
+      // $producto = Producto::find($id);
+
+        $productos = Producto::all();
+        return view('producto.index', compact('productos'));
+    }
+
     /**
      * Display the specified resource.
      */
