@@ -62,6 +62,10 @@ Route::get('/facturacion/verpdf/{id}', [App\Http\Controllers\FacturaController::
 Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaController::class, 'borrardet'])->name('borrardet');
 Route::get('/facturacion/generardteconsumidor/{id}', [App\Http\Controllers\FacturaController::class, 'generardteconsumidor'])->name('generardteconsumidor');
 
+Route::get('/facturacion/crearfiscal', [App\Http\Controllers\FacturaController::class, 'crearfiscal'])->name('crearfiscal');
+Route::get('/facturacion/creditofiscaldte', [App\Http\Controllers\FacturaController::class, 'creditofiscaldte'])->name('creditofiscaldte');
+
+
 // Control
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
 Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');

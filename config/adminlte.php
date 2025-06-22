@@ -361,7 +361,7 @@ return [
         ],
          [
             'text' => 'Credito Fiscal',
-            'url' => '/',
+            'url' => '/facturacion/crearfiscal',
             'icon' => 'fas fa-truck',
         ],
         [
