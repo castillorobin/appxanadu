@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Factura;
 use App\Models\Cliente;
 use App\Models\Producto;
+use App\Models\Municipio;
+use App\Models\Actividad;
+use App\Models\Departamento;
 use App\Models\Cotidetalle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -197,7 +200,12 @@ $ultimoid = Factura::latest('id')->first();
 
      public function crearfiscal()
     {
-        return view('facturacion.crearcreditofiscal');
+        $clientes = Cliente::all();
+        $productos = Producto::all();
+        $municipios = Municipio::all();
+        $departamentos = Departamento::all();
+         $actividades = Actividad::all();
+        return view('facturacion.crearcreditofiscal', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades'));
     }
 
      public function creditofiscaldte(Request $request)
@@ -207,6 +215,8 @@ $ultimoid = Factura::latest('id')->first();
         $detalles = Cotidetalle::where('coticode', $codigo)->get();
 
         $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
+        
+        
 
         $actual = $factura[0]->codigo;
         return view('facturacion.generardtefiscal', compact('actual', 'detalles', 'cliente'));

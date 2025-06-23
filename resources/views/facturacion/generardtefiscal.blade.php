@@ -247,7 +247,7 @@ class DocumentoTributarioElectronico {
 date_default_timezone_set('America/El_Salvador');
 $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
-
+ 
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $paradte = 90000000000 + $detalles[0]->id;

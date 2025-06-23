@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cotización')
+@section('title', 'Credito Fiscal')
 
 @section('content_header')
     <h1>Factura Credito Fiscal</h1>
@@ -32,8 +32,244 @@
                         @csrf
                                 @method('GET')
 <div class="container">
-<input type="text" name="codigo" id="codigo" value="20253">
-<button type="submit">Facturar</button>
+
+
+
+
+    
+    <div class="row my-3">
+
+        <div class="col-6 text-center">
+         <h5>Santos Alberto Guerrero Beltran</h5>
+            <h4>MOTEL XANADU</h4>
+            <H5>Carretera a los Naranjos</H5>
+            <H5>Cantón Cantarrana, Santa Ana</H5>
+            <H5>Tel.: 2429-0920</H5>
+
+
+        </div>
+
+
+        <div class="col-6 text-center">
+            <h3 >FACTURA</h3>
+            <h5 >N.R.C Nº 183428-4</h5>
+            <h5>DUI 00520755-0</h5>
+            <h5 >NIT 0509-021159-101-0</h5>
+        </div>  
+
+
+</div>
+        <div class="row my-2">
+
+                    <div class="col-6">
+                        
+                        <div class="input-group">
+                            <span class="input-group-text">Fecha</span>
+                            <input class="form-control form-control-transparent fw-bold pe-5" value="{{ date('d/m/Y') }}" name="fecha"/>
+ 
+                        </div>
+                    </div>
+
+
+                  
+        </div>
+
+        <div class="row my-2">
+
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">NIT/DUI</span>
+                        <input type="text" class="form-control" id="dui" name="dui" placeholder="Ingrese el DUI/NIT">
+                    </div>
+                    </div>
+
+    
+        </div>
+         <div class="row my-2">
+
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">NRC</span>
+                        <input type="text" class="form-control" id="nrc" name="nrc" placeholder="Ingrese el NRC">
+                    </div>
+                    </div>
+        </div>
+
+          <div class="row my-2">
+
+                    <div class=" col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Nombre</span>
+                        <input type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre del cliente">
+                    </div>
+                    </div>
+    
+        </div>
+
+        <div class="row my-2">
+
+                    <div class=" col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Nombre comercial</span>
+                        <input type="text" name="comercial" class="form-control" placeholder="Ingrese el nombre comercial">
+                    </div>
+                    </div>
+    
+        </div>
+
+        <div class="row my-2">
+
+                    <div class=" col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Actividad</span>
+                         <select class="form-control js-example-basic-single produ" name="actividad" id="actividad" >
+                        
+                            @foreach($actividades as $actividad)
+                            <option value="{{$actividad->codigo}}">{{$actividad->descripcion}} </option>
+                            
+                            
+                            @endforeach 
+                            
+                        </select>
+                    </div>
+                    </div>
+    
+        </div>
+
+        <div class="row my-2">
+
+                    <div class=" col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Departamento</span>
+                         <select class="form-control js-example-basic-single produ" name="departamento" id="departamento" >
+                        
+                            @foreach($departamentos as $departamento)
+                            <option value="{{$departamento->Codigo}}">{{$departamento->Valor}} </option>
+                            
+                            
+                            @endforeach 
+                            
+                        </select>
+                    </div>
+                    </div>
+    
+        </div>
+
+        <div class="row my-2">
+
+                    <div class=" col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Municipio</span>
+                         <select class="form-control js-example-basic-single produ" name="municipio" id="municipio" >
+                        
+                            @foreach($municipios as $municipio)
+                            <option value="{{$municipio->Codigo}}">{{$municipio->Valor}} </option>
+                            
+                            
+                            @endforeach 
+                            
+                        </select>
+                    </div>
+                    </div>
+    
+        </div>
+
+        <div class="row my-2" >
+
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Direccion(Complemento)</span>
+                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese la direccion">
+                    </div>
+                    </div>           
+        </div>
+
+        <div class="row my-2" >
+
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Telefono</span>
+                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese el telefono">
+                    </div>
+                    </div>           
+        </div>
+
+        <div class="row my-2" >
+
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Correo</span>
+                        <input type="text" class="form-control" id="correo" name="correo" placeholder="Ingrese el correo">
+                    </div>
+                    </div>           
+        </div>
+
+
+
+        
+
+
+
+<hr>
+        <div class="row">
+            
+                   
+                  
+                    <div class=" col-3 " >
+                    
+                    <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
+                     
+                    </div>   
+                
+        </div>
+        
+        <div class="row">
+            <div class="mb-3 col-2">
+                <label class="form-label">Descripcion </label>
+                        <input type="text" class="form-control" id="detalle" name="detalle" >
+            </div>
+            <div class=" col-1 " >
+            
+                <label class="form-label">Cantidad </label>
+                        <input type="text" class="form-control" id="cantidad" name="cantidad" onChange="totalizar()">
+                
+            </div>  
+            
+
+            <div class=" col-1 " >
+            
+                <label class="form-label">Existencia</label>
+                        <input type="text" class="form-control" id="existencia" name="existencia" readonly>
+                
+            </div>  
+            <div class=" col-1 " >
+            
+                <label class="form-label">Precio</label>
+                        <input type="text" class="form-control" id="precio" name="precio"  onChange="totalizar()">
+                
+            </div> 
+            <div class=" col-1 " >
+            
+                <label class="form-label">Total</label>
+                        <input type="text" class="form-control" id="total" name="total">
+                
+            </div> 
+            
+            <div class=" col-3 " >
+            
+            <button type="submit" class="btn btn-success mt-4" >Agregar</button>
+        </form>
+            </div>   
+</div>
+                    
+<hr>
+<a href="/facturacion">
+                    <button type="button" class="btn btn-danger">Cancelar</button> </a>
+&nbsp; &nbsp; &nbsp;
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+
+
+
 
 </form>
     
@@ -44,7 +280,7 @@
    
 </section>
 
-
+ 
 
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   
