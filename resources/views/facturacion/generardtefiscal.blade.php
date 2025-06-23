@@ -250,14 +250,15 @@ $hora_actual = date("h:i:s");
 
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
+    $paradte = 90000000000 + $detalles[0]->id;
     $dte = new DocumentoTributarioElectronico();
     
     // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-03-F0000001-000080000000409";
-    $dte->identificacion->codigoGeneracion = "7DEEF8AF-7DF6-476F-B9AE-47CA46035F1B";
-    $dte->identificacion->fecEmi = "2025-06-22";
-    $dte->identificacion->horEmi = "08:55:25";
+    $dte->identificacion->numeroControl = "DTE-03-F0000001-0000". $paradte; //DTE-01-F0000001-000080000000263
+    $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF8AF-7DF6-476F-B9AE-47CA46035F1B";
+    $dte->identificacion->fecEmi = $fecha_actual;
+    $dte->identificacion->horEmi = $hora_actual;
     
     // Configurar emisor
     $dte->emisor = new Emisor();
@@ -289,8 +290,8 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->receptor->descActividad = "CONSTRUCCIÓN DE EDIFICIOS";
     $dte->receptor->direccion = new Direccion();
     $dte->receptor->direccion->departamento = "02";
-    $dte->receptor->direccion->municipio = "10";
-    $dte->receptor->direccion->complemento = "Av. Las Magnolias #456, San Miguel";
+    $dte->receptor->direccion->municipio = "01";
+    $dte->receptor->direccion->complemento = "Av. Las Magnolias #456";
     $dte->receptor->telefono = "2666-7788";
     $dte->receptor->correo = "compras@constrccionsv.com";
 
