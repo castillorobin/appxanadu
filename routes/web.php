@@ -64,6 +64,7 @@ Route::get('/facturacion/generardteconsumidor/{id}', [App\Http\Controllers\Factu
 
 Route::get('/facturacion/crearfiscal', [App\Http\Controllers\FacturaController::class, 'crearfiscal'])->name('crearfiscal');
 Route::get('/facturacion/creditofiscaldte', [App\Http\Controllers\FacturaController::class, 'creditofiscaldte'])->name('creditofiscaldte');
+Route::get('/facturacion/fiscalenca', [App\Http\Controllers\FacturaController::class, 'fiscalenca'])->name('fiscalenca');
 
 
 // Control

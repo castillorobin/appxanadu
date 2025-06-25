@@ -8,7 +8,7 @@ use App\Models\Producto;
 use App\Models\Municipio;
 use App\Models\Actividad;
 use App\Models\Departamento;
-use App\Models\Cotidetalle;
+use App\Models\Fiscal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -220,6 +220,49 @@ $ultimoid = Factura::latest('id')->first();
 
         $actual = $factura[0]->codigo;
         return view('facturacion.generardtefiscal', compact('actual', 'detalles', 'cliente'));
+    }
+
+     public function fiscalenca(Request $request)
+    {
+        $dui =$request->get('dui');
+        $nrc =$request->get('nrc');
+        $nombre =$request->get('nombre');
+        $comercial =$request->get('comercial');
+        $actividad =$request->get('actividad');
+        $acti = Actividad::where('codigo', $actividad)->get();
+
+        $descripcion = $acti[0]->descripcion;
+        $depa = $request->get('departamento');
+        $muni =$request->get('municipio');
+        $direccion =$request->get('direccion');
+        $telefono =$request->get('telefono');
+        $correo =$request->get('correo');
+
+        $fiscal = new Fiscal();
+        $fiscal->nit = $dui;
+        $fiscal->nrc = $nrc;
+        $fiscal->nombre = $nombre;
+        $fiscal->comercial = $comercial ; 
+        $fiscal->codactividad = $actividad;
+        $fiscal->actividad = $descripcion;
+        $fiscal->departamento =$depa ;
+        $fiscal->municipio =$muni ;
+        $fiscal->direccion = $direccion;
+        $fiscal->telefono = $telefono;
+        $fiscal->correo = $correo;
+
+        $fiscal->save();
+
+
+         $clientes = Cliente::all();
+        $productos = Producto::all();
+        $municipios = Municipio::all();
+        $departamentos = Departamento::all();
+         $actividades = Actividad::all();
+        return view('facturacion.crearcreditofiscal', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades'));
+
+
+        
     }
 
 

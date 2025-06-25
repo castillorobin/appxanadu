@@ -28,7 +28,7 @@
 
                     
                     
-                    <form action="/facturacion/creditofiscaldte" method="get">
+                    <form action="/facturacion/fiscalenca" method="get">
                         @csrf
                                 @method('GET')
 <div class="container">
@@ -215,11 +215,7 @@
             
                    
                   
-                    <div class=" col-3 " >
-                    
-                    <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
-                     
-                    </div>   
+                  
                 
         </div>
         
@@ -266,7 +262,7 @@
 <a href="/facturacion">
                     <button type="button" class="btn btn-danger">Cancelar</button> </a>
 &nbsp; &nbsp; &nbsp;
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+             
 
 
 
