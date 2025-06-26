@@ -71,7 +71,9 @@ Route::get('/facturacion/detalleaddfiscal', [App\Http\Controllers\FacturaControl
 Route::get('/facturacion/borrardetfiscal/{id}', [App\Http\Controllers\FacturaController::class, 'borrardetfiscal'])->name('borrardetfiscal');
 
 Route::get('/facturacion/crearfiscaltur', [App\Http\Controllers\FacturaController::class, 'crearfiscaltur'])->name('crearfiscaltur');
-
+Route::get('/facturacion/fiscalencatur', [App\Http\Controllers\FacturaController::class, 'fiscalencatur'])->name('fiscalencatur');
+Route::get('/facturacion/detalleaddfiscaltur', [App\Http\Controllers\FacturaController::class, 'detalleaddfiscaltur'])->name('detalleaddfiscaltur');
+Route::get('/facturacion/generardtefiscaltur/{id}', [App\Http\Controllers\FacturaController::class, 'generardtefiscaltur'])->name('generardtefiscaltur');
 
 // Control
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
