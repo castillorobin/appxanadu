@@ -309,7 +309,7 @@ foreach ($detalles as $detalle) {
 
     $precioConIVA = round($detalle->total, 2);
    
-    $baseSinIVA = $precioConIVA / 1.13;
+    $baseSinIVA = round($precioConIVA / 1.13, 2);
      
     $precioUnitarioBase = $baseSinIVA / $item->cantidad;
     
@@ -317,8 +317,8 @@ foreach ($detalles as $detalle) {
     $item->codTributo = null;
     $item->uniMedida = 59;
     $item->descripcion = $detalle->descripcion;
-    $item->precioUni = round($baseSinIVA, 2);
-
+    $item->precioUni = round($precioUnitarioBase, 2);
+//dd(round($item->precioUni ));
     $item->montoDescu = 0.00;
     $item->ventaNoSuj = 0.00;
     $item->ventaExenta = 0.00;

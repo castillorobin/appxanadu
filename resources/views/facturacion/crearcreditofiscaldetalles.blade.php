@@ -266,7 +266,7 @@
             <button type="button" class="btn btn-danger">Borrar</button>
             </a>
             
-       <input type="text" value="{{ $turismo = $turismo  + (($detalles[$i]->total) * 0.13) }}" hidden> 
+       <input type="text" value="{{ $turismo = $turismo  + (($detalles[$i]->total / 1.13) * 0.13) }}" hidden> 
        
         </td>
         </tr>
@@ -298,7 +298,7 @@
                     <td style="text-align: center; border: 0px solid black; "></td>
                    
                     <td style="text-align: center; ">Total: </td>
-                    <td style="text-align: center;">$ {{ round( $subtotal + $turismo, 2)}}</td>
+                    <td style="text-align: center;">$ {{ round( $subtotal , 2)}}</td>
                   
                 
                    
