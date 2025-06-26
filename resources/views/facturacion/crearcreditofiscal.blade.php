@@ -4,15 +4,51 @@
 
 @section('content_header')
     <h1>Factura Credito Fiscal</h1>
-  
 
+ 
 @stop
 
-@section('content')
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
+@section('css')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+<style>
+/* Ajusta el alto del Select2 para que coincida con form-control */
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    padding: 6px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 24px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+    top: 1px;
+    right: 5px;
+}
+</style>
+@endsection
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: 'Seleccione una opción',
+       
+       
+    });
+});
+</script>
+@endsection
+
+@section('content')
+
 
 
 <section class="content container-fluid">
@@ -122,7 +158,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Actividad</span>
-                         <select class="form-control js-example-basic-single produ" name="actividad" id="actividad" >
+                         <select class="form-control select2" name="actividad" id="actividad" >
                         
                             @foreach($actividades as $actividad)
                             <option value="{{$actividad->codigo}}">{{$actividad->descripcion}} </option>
@@ -131,6 +167,11 @@
                             @endforeach 
                             
                         </select>
+
+                        
+
+
+
                     </div>
                     </div>
     
@@ -141,7 +182,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Departamento</span>
-                         <select class="form-control js-example-basic-single produ" name="departamento" id="departamento" >
+                         <select class="form-control produ" name="departamento" id="departamento" >
                         
                             @foreach($departamentos as $departamento)
                             <option value="{{$departamento->Codigo}}">{{$departamento->Valor}} </option>
@@ -160,7 +201,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Municipio</span>
-                         <select class="form-control js-example-basic-single produ" name="municipio" id="municipio" >
+                         <select class="form-control produ" name="municipio" id="municipio" >
                         
                             @foreach($municipios as $municipio)
                             <option value="{{$municipio->Codigo}}">{{$municipio->Valor}} </option>
@@ -261,7 +302,6 @@
 
 
 
-
 </form>
     
                 </div>
@@ -272,19 +312,6 @@
 </section>
 
  
-
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-  
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-    $('.js-example-basic-single').select2();
-});
-</script>
-
-
-
 
 
 <script>
@@ -357,6 +384,15 @@ function totalizar() {
 
 
 
+<script>
+$(document).ready(function() {
+    $('.select2').select2({
+        placeholder: 'Seleccione una opción',
+        allowClear: true,
+        minimumResultsForSearch: 0 // fuerza mostrar el buscador
+    });
+});
+</script>
+
+
 @endsection
-
-
