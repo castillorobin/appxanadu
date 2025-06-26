@@ -346,27 +346,20 @@ $dte->resumen = new Resumen();
 $dte->resumen->totalNoSuj = 0.00;
 $dte->resumen->totalExenta = 0.00;
 $dte->resumen->totalGravada = round($totalGravada, 2);
-
 $dte->resumen->subTotalVentas = round($totalGravada, 2);
-
 $dte->resumen->descuNoSuj = 0.00;
 $dte->resumen->descuExenta = 0.00;
 $dte->resumen->descuGravada = 0.00;
 $dte->resumen->porcentajeDescuento = 0.00;
 $dte->resumen->totalDescu = 0.00;
 $dte->resumen->subTotal = round($totalGravada, 2);
-
 $dte->resumen->ivaRete1 = 0.00;
 $dte->resumen->ivaPerci1 = 0.00;
 $dte->resumen->reteRenta = 0.00;
-
 $dte->resumen->montoTotalOperacion = round($totalPagar, 2);
-
 $dte->resumen->totalNoGravado = 0.00;
 $dte->resumen->totalPagar = round($totalPagar, 2);
-//dd(round($dte->resumen->totalPagar ));
 $dte->resumen->totalLetras = numeroALetras($totalPagar);
-
 $dte->resumen->saldoFavor = 0.00;
 $dte->resumen->condicionOperacion = 1;
 $dte->resumen->pagos = null;
