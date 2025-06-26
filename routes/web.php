@@ -59,12 +59,15 @@ Route::get('/facturacion/detalleadd', [App\Http\Controllers\FacturaController::c
 Route::get('/facturacion/ver/{id}', [App\Http\Controllers\FacturaController::class, 'ver'])->name('verco');
 Route::get('/facturacion/verpdf/{id}', [App\Http\Controllers\FacturaController::class, 'verpdf'])->name('verpdf');
 
+
 Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaController::class, 'borrardet'])->name('borrardet');
 Route::get('/facturacion/generardteconsumidor/{id}', [App\Http\Controllers\FacturaController::class, 'generardteconsumidor'])->name('generardteconsumidor');
+Route::get('/facturacion/generardtefiscal/{id}', [App\Http\Controllers\FacturaController::class, 'generardtefiscal'])->name('generardtefiscal');
 
 Route::get('/facturacion/crearfiscal', [App\Http\Controllers\FacturaController::class, 'crearfiscal'])->name('crearfiscal');
 Route::get('/facturacion/creditofiscaldte', [App\Http\Controllers\FacturaController::class, 'creditofiscaldte'])->name('creditofiscaldte');
 Route::get('/facturacion/fiscalenca', [App\Http\Controllers\FacturaController::class, 'fiscalenca'])->name('fiscalenca');
+Route::get('/facturacion/detalleaddfiscal', [App\Http\Controllers\FacturaController::class, 'detalleaddfiscal'])->name('detalleaddfiscal');
 
 
 // Control

@@ -98,20 +98,20 @@ function numeroALetras($numero) {
 function sacarivas($detalles){
     $iva = 0;
     foreach ($detalles as $detalle) {
-        $iva += $detalle->preciouni;
-
+        $base = $detalle->total / 1.13;
+        $iva += round($base * 0.13, 2);
     }
-   $ivatotal = (($iva / 1.13) * 0.13);
-    return $ivatotal;
+    return $iva;
 }
 
 function sacartotal($detalles){
-    $total = 0;
+    $totalBase = 0;
     foreach ($detalles as $detalle) {
-        $total += $detalle->preciouni;
-
+        // Suponiendo que el total viene con IVA incluido
+        $base = $detalle->total / 1.13;
+        $totalBase += round($base, 2);
     }
-    return $total;
+    return $totalBase;
 }
 
 // Clases para estructurar el DTE
@@ -249,7 +249,7 @@ $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
  
 // Función para crear el DTE
-function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
+function crearDTE($fecha_actual, $hora_actual, $detalles, $factura) {
     $paradte = 90000000000 + $detalles[0]->id;
     $dte = new DocumentoTributarioElectronico();
     
@@ -282,69 +282,104 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
     // Configurar receptor
     $dte->receptor = new Receptor();
-    $dte->receptor->nit = "06143110171029";
-    $dte->receptor->nrc = "2649043";
-    $dte->receptor->nombre = "CONSTRUCCIONES EL SALVADOR S.A. DE C.V.";
-    $dte->receptor->nombreComercial = "CONSTRUCCIONES SV";
-    $dte->receptor->codActividad = "41001";
-    $dte->receptor->descActividad = "CONSTRUCCIÓN DE EDIFICIOS";
+    $dte->receptor->nit = $factura[0]->nit;
+    $dte->receptor->nrc = $factura[0]->nrc;
+    $dte->receptor->nombre = $factura[0]->nombre;
+    $dte->receptor->nombreComercial = $factura[0]->comercial;
+    $dte->receptor->codActividad = $factura[0]->codactividad;
+    $dte->receptor->descActividad = $factura[0]->actividad;
     $dte->receptor->direccion = new Direccion();
-    $dte->receptor->direccion->departamento = "02";
-    $dte->receptor->direccion->municipio = "01";
-    $dte->receptor->direccion->complemento = "Av. Las Magnolias #456";
-    $dte->receptor->telefono = "2666-7788";
-    $dte->receptor->correo = "compras@constrccionsv.com";
+    $dte->receptor->direccion->departamento = $factura[0]->departamento;
+    $dte->receptor->direccion->municipio = $factura[0]->municipio;
+    $dte->receptor->direccion->complemento = $factura[0]->direccion;
+    $dte->receptor->telefono = $factura[0]->telefono;
+    $dte->receptor->correo = $factura[0]->correo;
 
-    // Configurar cuerpo del documento
+
+   $cuerpo = [];
+$totalGravada = 0;
+$itemnum = 1;
+
+foreach ($detalles as $detalle) {
     $item = new ItemDocumento();
-    $item->numItem = 1;
+    $item->numItem = $itemnum++;
     $item->tipoItem = 3;
     $item->numeroDocumento = null;
-    $item->cantidad = 1;
+    $item->cantidad = $detalle->cantidad;
+
+    $precioConIVA = round($detalle->total, 2);
+   
+    $baseSinIVA = $precioConIVA / 1.13;
+     
+    $precioUnitarioBase = $baseSinIVA / $item->cantidad;
+    
     $item->codigo = "27";
     $item->codTributo = null;
     $item->uniMedida = 59;
-    $item->descripcion = "Habitacion";
-    $item->precioUni = 100;
-    $item->montoDescu = 0;
-    $item->ventaNoSuj = 0;
-    $item->ventaExenta = 0;
-    $item->ventaGravada = 100;
-    $item->tributos = ["20"];
-    $item->psv = 100;
-    $item->noGravado = 0;
-    $dte->cuerpoDocumento = [$item];
+    $item->descripcion = $detalle->descripcion;
+    $item->precioUni = round($baseSinIVA, 2);
 
-    // Configurar resumen
-    $dte->resumen = new Resumen();
-    $dte->resumen->totalNoSuj = 0.00;
-    $dte->resumen->totalExenta = 0.00;
-    $dte->resumen->totalGravada = 100.00;
-    $dte->resumen->subTotalVentas = 100.00;
-    $dte->resumen->descuNoSuj = 0.00;
-    $dte->resumen->descuExenta = 0.00;
-    $dte->resumen->descuGravada = 0.00;
-    $dte->resumen->porcentajeDescuento = 0.00;
-    $dte->resumen->totalDescu = 0.00;
-    $dte->resumen->subTotal = 100.00;
-    $dte->resumen->ivaRete1 = 0.00;
-    $dte->resumen->ivaPerci1 = 0.00;
-    $dte->resumen->reteRenta = 0.00;
-    $dte->resumen->montoTotalOperacion = 113.00;
-    $dte->resumen->totalNoGravado = 0.00;
-    $dte->resumen->totalPagar = 113.00;
-    $dte->resumen->totalLetras = "CIENTO TRECE DÓLARES 00/100";
-    $dte->resumen->saldoFavor = 0.00;
-    $dte->resumen->condicionOperacion = 1;
-    $dte->resumen->pagos = null;
-    $dte->resumen->tributos = [
-        [
-            "codigo" => "20",
-            "descripcion" => "Impuesto al Valor Agregado 13%",
-            "valor" => 13.00
-        ]
-    ];
-    $dte->resumen->numPagoElectronico = null;
+    $item->montoDescu = 0.00;
+    $item->ventaNoSuj = 0.00;
+    $item->ventaExenta = 0.00;
+
+    $item->ventaGravada = round($baseSinIVA, 2);
+   
+    $item->psv = $item->ventaGravada;
+    
+    $item->noGravado = 0.00;
+    $item->tributos = ["20"];
+
+    $totalGravada += $item->ventaGravada;
+    $cuerpo[] = $item;
+}
+
+$dte->cuerpoDocumento = $cuerpo;
+
+
+// Calcular totales base y IVA
+$totalBase = round(sacartotal($detalles), 2);
+$totalIVA = round($totalBase * 0.13, 2);
+$totalPagar = $totalBase + $totalIVA;
+
+$dte->resumen = new Resumen();
+$dte->resumen->totalNoSuj = 0.00;
+$dte->resumen->totalExenta = 0.00;
+$dte->resumen->totalGravada = round($totalGravada, 2);
+
+$dte->resumen->subTotalVentas = round($totalGravada, 2);
+
+$dte->resumen->descuNoSuj = 0.00;
+$dte->resumen->descuExenta = 0.00;
+$dte->resumen->descuGravada = 0.00;
+$dte->resumen->porcentajeDescuento = 0.00;
+$dte->resumen->totalDescu = 0.00;
+$dte->resumen->subTotal = round($totalGravada, 2);
+
+$dte->resumen->ivaRete1 = 0.00;
+$dte->resumen->ivaPerci1 = 0.00;
+$dte->resumen->reteRenta = 0.00;
+
+$dte->resumen->montoTotalOperacion = round($totalPagar, 2);
+
+$dte->resumen->totalNoGravado = 0.00;
+$dte->resumen->totalPagar = round($totalPagar, 2);
+//dd(round($dte->resumen->totalPagar ));
+$dte->resumen->totalLetras = numeroALetras($totalPagar);
+
+$dte->resumen->saldoFavor = 0.00;
+$dte->resumen->condicionOperacion = 1;
+$dte->resumen->pagos = null;
+
+$dte->resumen->tributos = [
+    [
+        "codigo" => "20",
+        "descripcion" => "Impuesto al Valor Agregado 13%",
+        "valor" => $totalIVA
+    ]
+];
+
+$dte->resumen->numPagoElectronico = null;
 
     // Configurar extensión
     $dte->extension = new Extension();
@@ -407,7 +442,7 @@ function enviarDTEAPI($dte) {
 // Iniciar proceso automáticamente al abrir el archivo desde el navegador
 try {
     echo "Iniciando generación de DTE...<br>";
-    $dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles);
+    $dte = crearDTE($fecha_actual, $hora_actual, $detalles, $factura);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
     $respuestaAPI = enviarDTEAPI($dte);

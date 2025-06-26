@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Factura;
 use App\Models\Cliente;
+use App\Models\Cotidetalle;
 use App\Models\Producto;
 use App\Models\Municipio;
 use App\Models\Actividad;
@@ -253,20 +254,69 @@ $ultimoid = Factura::latest('id')->first();
 
         $fiscal->save();
 
+        $ultimoid = Fiscal::latest('id')->first();
+        $codigo = $ultimoid->id;
+        $linea = new Cotidetalle();
+       $linea->coticode = $ultimoid->id;
+       $linea->descripcion = $request->get('detalle');
+       $linea->cantidad = $request->get('cantidad');
+       $linea->preciouni = $request->get('precio');
+       $linea->total = $request->get('total');
+       $linea->save();
 
-         $clientes = Cliente::all();
+
+        $cotiactual = Fiscal::where('id', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+        $clientes = Cliente::all();
         $productos = Producto::all();
         $municipios = Municipio::all();
         $departamentos = Departamento::all();
-         $actividades = Actividad::all();
-        return view('facturacion.crearcreditofiscal', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades'));
+        $actividades = Actividad::all();
+
+        return view('facturacion.crearcreditofiscaldetalles', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades', 'detalles', 'cotiactual'));
 
 
         
     }
 
+    public function detalleaddfiscal(Request $request)
+    {
 
-    
+        $codigo = $request->get('codigo');
+
+       // dd($codigo);
+
+         $linea = new Cotidetalle();
+       $linea->coticode = $codigo;
+       $linea->descripcion = $request->get('detalle');
+       $linea->cantidad = $request->get('cantidad');
+       $linea->preciouni = $request->get('precio');
+       $linea->total = $request->get('total');
+       $linea->save();
+
+        $cotiactual = Fiscal::where('id', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+        $clientes = Cliente::all();
+        $productos = Producto::all();
+        $municipios = Municipio::all();
+        $departamentos = Departamento::all();
+        $actividades = Actividad::all();
+
+        return view('facturacion.crearcreditofiscaldetalles', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades', 'detalles', 'cotiactual'));
+        
+    }
+
+
+    public function generardtefiscal($codigo)
+    {
+        $factura = Fiscal::where('id', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+
+       // $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
+
+        $actual = $factura[0]->codigo;
+        return view('facturacion.generardtefiscal', compact('factura', 'detalles'));
+    }
 
     /**
      * Store a newly created resource in storage.  crearfiscal

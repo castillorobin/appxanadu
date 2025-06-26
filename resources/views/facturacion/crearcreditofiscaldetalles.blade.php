@@ -28,9 +28,7 @@
 
                     
                     
-                    <form action="/facturacion/fiscalenca" method="get">
-                        @csrf
-                                @method('GET')
+                    
 <div class="container">
 
 
@@ -65,7 +63,7 @@
                         
                         <div class="input-group">
                             <span class="input-group-text">Fecha</span>
-                            <input class="form-control form-control-transparent fw-bold pe-5" value="{{ date('d/m/Y') }}" name="fecha"/>
+                            <input class="form-control form-control-transparent fw-bold pe-5" value="{{ date('d/m/Y') }}" name="fecha" readonly />
  
                         </div>
                     </div>
@@ -79,7 +77,7 @@
                     <div class="col-6">
                     <div class="input-group">
                         <span class="input-group-text">NIT/DUI</span>
-                        <input type="text" class="form-control" id="dui" name="dui" placeholder="Ingrese el DUI/NIT">
+                        <input type="text" class="form-control" id="dui" name="dui" value="{{ $cotiactual[0]->nit}}" readonly>
                     </div>
                     </div>
 
@@ -90,7 +88,7 @@
                     <div class="col-6">
                     <div class="input-group">
                         <span class="input-group-text">NRC</span>
-                        <input type="text" class="form-control" id="nrc" name="nrc" placeholder="Ingrese el NRC">
+                        <input type="text" class="form-control" id="nrc" name="nrc" value="{{ $cotiactual[0]->nrc}}" readonly>
                     </div>
                     </div>
         </div>
@@ -100,7 +98,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Nombre</span>
-                        <input type="text" name="nombre" class="form-control" placeholder="Ingrese el nombre del cliente">
+                        <input type="text" name="nombre" class="form-control" value="{{ $cotiactual[0]->nombre}}" readonly>
                     </div>
                     </div>
     
@@ -111,7 +109,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Nombre comercial</span>
-                        <input type="text" name="comercial" class="form-control" placeholder="Ingrese el nombre comercial">
+                        <input type="text" name="comercial" class="form-control" value="{{ $cotiactual[0]->comercial}}" readonly>
                     </div>
                     </div>
     
@@ -122,15 +120,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Actividad</span>
-                         <select class="form-control js-example-basic-single produ" name="actividad" id="actividad" >
-                        
-                            @foreach($actividades as $actividad)
-                            <option value="{{$actividad->codigo}}">{{$actividad->descripcion}} </option>
-                            
-                            
-                            @endforeach 
-                            
-                        </select>
+                         <input type="text" value="{{ $cotiactual[0]->codactividad}}" class="form-control" readonly>
                     </div>
                     </div>
     
@@ -141,15 +131,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Departamento</span>
-                         <select class="form-control js-example-basic-single produ" name="departamento" id="departamento" >
-                        
-                            @foreach($departamentos as $departamento)
-                            <option value="{{$departamento->Codigo}}">{{$departamento->Valor}} </option>
-                            
-                            
-                            @endforeach 
-                            
-                        </select>
+                         <input type="text" value="{{ $cotiactual[0]->departamento}}" class="form-control" readonly>
                     </div>
                     </div>
     
@@ -160,15 +142,7 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Municipio</span>
-                         <select class="form-control js-example-basic-single produ" name="municipio" id="municipio" >
-                        
-                            @foreach($municipios as $municipio)
-                            <option value="{{$municipio->Codigo}}">{{$municipio->Valor}} </option>
-                            
-                            
-                            @endforeach 
-                            
-                        </select>
+                         <input type="text" value="{{ $cotiactual[0]->municipio}}" class="form-control" readonly>
                     </div>
                     </div>
     
@@ -179,7 +153,7 @@
                     <div class="col-6">
                     <div class="input-group">
                         <span class="input-group-text">Direccion(Complemento)</span>
-                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese la direccion">
+                        <input type="text" class="form-control" id="direccion" name="direccion" value="{{ $cotiactual[0]->direccion}}" readonly>
                     </div>
                     </div>           
         </div>
@@ -189,7 +163,7 @@
                     <div class="col-6">
                     <div class="input-group">
                         <span class="input-group-text">Telefono</span>
-                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese el telefono">
+                        <input type="text" class="form-control" id="telefono" name="telefono" value="{{ $cotiactual[0]->telefono}}" readonly>
                     </div>
                     </div>           
         </div>
@@ -199,7 +173,7 @@
                     <div class="col-6">
                     <div class="input-group">
                         <span class="input-group-text">Correo</span>
-                        <input type="text" class="form-control" id="correo" name="correo" placeholder="Ingrese el correo">
+                        <input type="text" class="form-control" id="correo" name="correo" value="{{ $cotiactual[0]->correo}}" readonly>
                     </div>
                     </div>           
         </div>
@@ -214,7 +188,9 @@
         <div class="row">
             
                    
-                  
+                  <form action="/facturacion/detalleaddfiscal" method="get">
+                        @csrf
+                                @method('GET')
                   
                 
         </div>
@@ -230,9 +206,9 @@
                         <input type="text" class="form-control" id="cantidad" name="cantidad" onChange="totalizar()">
                 
             </div>  
-            
-<input type="text" class="form-control" id="existencia" name="existencia" readonly hidden>
-            
+             <input type="text" class="form-control" id="existencia" name="existencia" readonly hidden>
+
+           
             <div class=" col-1 " >
             
                 <label class="form-label">Precio</label>
@@ -245,24 +221,104 @@
                         <input type="text" class="form-control" id="total" name="total">
                 
             </div> 
+
+<input type="text" class="form-control" id="codigo" name="codigo" value="{{ $cotiactual[0]->id}}" hidden>
+
+
+
             
             <div class=" col-3 " >
             
             <button type="submit" class="btn btn-success mt-4" >Agregar</button>
         </form>
             </div>   
-</div>
+
+
+
+
+
+<table id="prove" class="table table-bordered shadow-lg mt-4 cell-border">
+    <thead >
+        <tr >
+            
+            <th scope="col">Detalle</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Total</th>
+            
+            <th scope="col">Accion</th>
+        </tr>
+    </thead>
+    <tbody>{{ $subtotal=0 }}{{ $turismo=0 }}
+        
+        @for ($i=0; $i< count($detalles); $i++)
+        <tr >
+        <td>{{ $detalles[$i]->descripcion }}</td>
+       
+        <td>{{ $detalles[$i]->cantidad }}</td>
+        <td>${{ $detalles[$i]->total }}</td>
+        <td>${{ $detalles[$i]->total }}</td>
+        {{ $subtotal = $subtotal + $detalles[$i]->total }}
+    
+        <td class="opciones text-center" style="">
+           
+            <a href="/facturacion/borrardet/{{ $detalles[$i]->id }}">
+            <button type="button" class="btn btn-danger">Borrar</button>
+            </a>
+            
+       <input type="text" value="{{ $turismo = $turismo  + (($detalles[$i]->total) * 0.13) }}" hidden> 
+       
+        </td>
+        </tr>
+        @endfor
+           
+        <tr >
+            <td style="text-align: center; border: 0px solid black; "></td>
+            <td style="text-align: center; border: 0px solid black; "></td>
+            
+           
+            <td style="text-align: center;">Subtotal: </td>
+            <td style="text-align: center;">$ {{ round($subtotal,2 )}}</td>
+          
+        
+           
+            </tr>
+            <tr >
+                <td style="text-align: center; border: 0px solid black; "></td>
+                <td style="text-align: center; border: 0px solid black; "></td>
+               
+                <td style="text-align: center; font-size:13px;">IVA 13%: </td>
+                <td style="text-align: center;">$ {{ round($turismo,2)}}</td>
+              
+            
+               
+                </tr>
+                <tr >
+                    <td style="text-align: center; border: 0px solid black; "></td>
+                    <td style="text-align: center; border: 0px solid black; "></td>
+                   
+                    <td style="text-align: center; ">Total: </td>
+                    <td style="text-align: center;">$ {{ round( $subtotal + $turismo, 2)}}</td>
+                  
+                
+                   
+                    </tr>    
+    </tbody>
+
+    </table>
                     
+    <input type="text" class="form-control" id="codigo" name="codigo" value="{{ $cotiactual[0]->codigo}}" hidden>
 <hr>
 <a href="/facturacion">
                     <button type="button" class="btn btn-danger">Cancelar</button> </a>
 &nbsp; &nbsp; &nbsp;
-             
+<a href="/facturacion/generardtefiscal/{{ $cotiactual[0]->id}}">
+                    <button type="button" class="btn btn-primary">Facturar</button></a>
 
 
 
 
-</form>
+
     
                 </div>
                 </div>
@@ -327,7 +383,7 @@ document.getElementById("total").value = preci * canti ;
 }
 
 function totalizar() {
-    var deta = document.getElementById("detalle").value;
+   var deta = document.getElementById("detalle").value;
     var canti = document.getElementById("cantidad").value ;
     var preci = document.getElementById('precio').value ;
      
@@ -348,12 +404,14 @@ function totalizar() {
     }
     
 
-
 }
 
 
 
 </script>
+
+
+
 
 
 
