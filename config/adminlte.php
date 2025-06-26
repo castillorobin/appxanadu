@@ -365,6 +365,11 @@ return [
             'icon' => 'fas fa-truck',
         ],
         [
+            'text' => 'Credito Fiscal con Turismo',
+            'url' => '/facturacion/crearfiscaltur',
+            'icon' => 'fas fa-truck',
+        ],
+        [
             'text' => 'No gravadas',
             'url' => '/',
             'icon' => 'fas fa-truck',

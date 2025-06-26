@@ -318,6 +318,38 @@ $ultimoid = Factura::latest('id')->first();
         return view('facturacion.generardtefiscal', compact('factura', 'detalles'));
     }
 
+     public function borrardetfiscal($id)
+    {
+        $detalle = Cotidetalle::where('id', $id)->get();
+        //dd($detalle);
+        $codigo = $detalle[0]->coticode;
+        Cotidetalle::find($id)->delete();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+       $clientes = Cliente::all();
+        $productos = Producto::all();
+
+
+        $cotiactual = Fiscal::where('id', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+        $clientes = Cliente::all();
+        $productos = Producto::all();
+        $municipios = Municipio::all();
+        $departamentos = Departamento::all();
+        $actividades = Actividad::all();
+
+        return view('facturacion.crearcreditofiscaldetalles', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades', 'detalles', 'cotiactual'));
+    }
+
+    public function crearfiscaltur()
+    {
+        $clientes = Cliente::all();
+        $productos = Producto::all();
+        $municipios = Municipio::all();
+        $departamentos = Departamento::all();
+         $actividades = Actividad::all();
+        return view('facturacion.crearcreditofiscaltur', compact('productos', 'clientes', 'municipios', 'departamentos', 'actividades'));
+    }
+
     /**
      * Store a newly created resource in storage.  crearfiscal
      */

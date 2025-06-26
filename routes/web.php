@@ -68,6 +68,9 @@ Route::get('/facturacion/crearfiscal', [App\Http\Controllers\FacturaController::
 Route::get('/facturacion/creditofiscaldte', [App\Http\Controllers\FacturaController::class, 'creditofiscaldte'])->name('creditofiscaldte');
 Route::get('/facturacion/fiscalenca', [App\Http\Controllers\FacturaController::class, 'fiscalenca'])->name('fiscalenca');
 Route::get('/facturacion/detalleaddfiscal', [App\Http\Controllers\FacturaController::class, 'detalleaddfiscal'])->name('detalleaddfiscal');
+Route::get('/facturacion/borrardetfiscal/{id}', [App\Http\Controllers\FacturaController::class, 'borrardetfiscal'])->name('borrardetfiscal');
+
+Route::get('/facturacion/crearfiscaltur', [App\Http\Controllers\FacturaController::class, 'crearfiscaltur'])->name('crearfiscaltur');
 
 
 // Control
