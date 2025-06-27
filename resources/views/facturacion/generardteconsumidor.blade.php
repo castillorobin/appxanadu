@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 <?php
 
 
@@ -23,7 +22,6 @@ function getGUID(){
         return $uuid;
     }
 }
-
 
 function numeroALetras($numero) {
     $unidad = [
@@ -117,6 +115,7 @@ function sacartotal($detalles){
 }
 
 
+
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 1;
@@ -154,6 +153,7 @@ class Emisor {
     public $codPuntoVentaMH;
     public $codPuntoVenta;
     public $correo;
+    //public $tributos;
 }
 
 class Receptor {
@@ -186,6 +186,7 @@ class ItemDocumento {
     public $psv;
     public $ivaItem;
     public $noGravado;
+
 }
 
 class Pago {
@@ -255,8 +256,8 @@ $hora_actual = date("h:i:s");
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
-$paradte = 90000000000 + $detalles[0]->id;
-
+ $paradte = 90000000000 + $detalles[0]->id;
+    
     $dte = new DocumentoTributarioElectronico();
     
     // Configurar identificación
@@ -273,13 +274,13 @@ $paradte = 90000000000 + $detalles[0]->id;
     $dte->emisor->nombre = "Santos Guerrero";
     $dte->emisor->codActividad = "55101";
     $dte->emisor->descActividad = "ALOJAMIENTO PARA ESTANCIAS CORTAS";
-    $dte->emisor->nombreComercial = "MOTEL SANTORINI";
+    $dte->emisor->nombreComercial = "AUTOMOTEL XANADU";
     $dte->emisor->tipoEstablecimiento = "02";
     $dte->emisor->direccion = new Direccion();
     $dte->emisor->direccion->departamento = "02";
     $dte->emisor->direccion->municipio = "01";
-    $dte->emisor->direccion->complemento = "17 AV. Sur y Calle Santa Cruz #7, Callejon Ferrocarril";
-    $dte->emisor->telefono = "2440-9776";
+    $dte->emisor->direccion->complemento = "Carretera a los naranjos, Lotificacion San Fernando #3 Poligono B";
+    $dte->emisor->telefono = "2429-0920";
     $dte->emisor->codEstableMH = null;
     $dte->emisor->codEstable = null;
     $dte->emisor->codPuntoVentaMH = null;
@@ -300,12 +301,14 @@ $paradte = 90000000000 + $detalles[0]->id;
     $dte->receptor->direccion->complemento = $cliente[0]->Direccion;
     $dte->receptor->telefono = $cliente[0]->Telefono;
     $dte->receptor->correo = $cliente[0]->Correo;
+
 $cuerpo = [];
 $totalGravada = 0;
-$totalTurismo = 0;
 $itemnum = 1;
+    foreach ($detalles as $detalle) {
+   
 
-foreach ($detalles as $detalle) {
+    // Configurar cuerpo del documento
     $item = new ItemDocumento();
     $item->numItem = $itemnum;
     $itemnum += 1;
@@ -321,28 +324,12 @@ foreach ($detalles as $detalle) {
     $item->ventaNoSuj = 0;
     $item->ventaExenta = 0;
     $item->ventaGravada = round($detalle->preciouni, 2);
-    $item->psv = round($detalle->preciouni, 2);
-    $item->noGravado = 0;
-    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);
-
-    if (stripos($detalle->descripcion, 'Habitacion')3
-    
-    
-    
-    
-    
-    
-    
-    ) {
-        $valorTurismo = round($detalle->preciouni * 0.05, 2);
-        $totalTurismo += $valorTurismo;
-        $item->tributos = ["59"];
-    } else {
-        $item->tributos = [];
-    }
-
     $totalGravada += $item->ventaGravada;
     $cuerpo[] = $item;
+    $item->psv = round($detalle->preciouni, 2);
+    $item->noGravado = 0;
+    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);  
+    $dte->cuerpoDocumento = [$item];
 }
 $dte->cuerpoDocumento = $cuerpo;
 
@@ -359,17 +346,6 @@ $dte->cuerpoDocumento = $cuerpo;
     $dte->resumen->descuGravada = 0.00;
     $dte->resumen->porcentajeDescuento = 0.00;
     $dte->resumen->totalDescu = 0.00;
-
-   $dte->resumen->tributos = [];
-if ($totalTurismo > 0) {
-    $dte->resumen->tributos[] = [
-        "codigo" => "59",
-        "descripcion" => "Turismo: alojamiento (5%)",
-        "valor" => round($totalTurismo, 2)
-    ];
-}
-
-
     $dte->resumen->subTotal = round($totalGravada, 2);
     $dte->resumen->ivaRete1 = 0.00;
     $dte->resumen->reteRenta = 0.00;
@@ -478,7 +454,9 @@ try {
     echo "Error: " . $e->getMessage() . "<br>";
 }
 
+
 ?>
+
 
 <p></p>
 <a href="/facturacion" class="btn btn-primary">Regresar</a>
