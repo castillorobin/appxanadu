@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 <?php
 
 
@@ -22,6 +23,7 @@ function getGUID(){
         return $uuid;
     }
 }
+
 
 function numeroALetras($numero) {
     $unidad = [
@@ -115,7 +117,6 @@ function sacartotal($detalles){
 }
 
 
-
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 1;
@@ -153,7 +154,6 @@ class Emisor {
     public $codPuntoVentaMH;
     public $codPuntoVenta;
     public $correo;
-    //public $tributos;
 }
 
 class Receptor {
@@ -186,7 +186,6 @@ class ItemDocumento {
     public $psv;
     public $ivaItem;
     public $noGravado;
-
 }
 
 class Pago {
@@ -256,8 +255,8 @@ $hora_actual = date("h:i:s");
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
- $paradte = 90000000000 + $detalles[0]->id;
-    
+$paradte = 90000000000 + $detalles[0]->id;
+
     $dte = new DocumentoTributarioElectronico();
     
     // Configurar identificación
@@ -274,13 +273,13 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->emisor->nombre = "Santos Guerrero";
     $dte->emisor->codActividad = "55101";
     $dte->emisor->descActividad = "ALOJAMIENTO PARA ESTANCIAS CORTAS";
-    $dte->emisor->nombreComercial = "AUTOMOTEL XANADU";
+    $dte->emisor->nombreComercial = "MOTEL SANTORINI";
     $dte->emisor->tipoEstablecimiento = "02";
     $dte->emisor->direccion = new Direccion();
     $dte->emisor->direccion->departamento = "02";
     $dte->emisor->direccion->municipio = "01";
-    $dte->emisor->direccion->complemento = "Carretera a los naranjos, Lotificacion San Fernando #3 Poligono B";
-    $dte->emisor->telefono = "2429-0920";
+    $dte->emisor->direccion->complemento = "17 AV. Sur y Calle Santa Cruz #7, Callejon Ferrocarril";
+    $dte->emisor->telefono = "2440-9776";
     $dte->emisor->codEstableMH = null;
     $dte->emisor->codEstable = null;
     $dte->emisor->codPuntoVentaMH = null;
@@ -301,15 +300,15 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->receptor->direccion->complemento = $cliente[0]->Direccion;
     $dte->receptor->telefono = $cliente[0]->Telefono;
     $dte->receptor->correo = $cliente[0]->Correo;
-
 $cuerpo = [];
 $totalGravada = 0;
 $totalTurismo = 0;
 $itemnum = 1;
 
-   foreach ($detalles as $detalle) {
+foreach ($detalles as $detalle) {
     $item = new ItemDocumento();
-    $item->numItem = $itemnum++;
+    $item->numItem = $itemnum;
+    $itemnum += 1;
     $item->tipoItem = 1;
     $item->numeroDocumento = null;
     $item->cantidad = $detalle->cantidad;
@@ -318,40 +317,36 @@ $itemnum = 1;
     $item->uniMedida = 1;
     $item->descripcion = $detalle->descripcion;
     $item->precioUni = round($detalle->preciouni, 2);
-    $item->montoDescu = 0.00;
-    $item->ventaNoSuj = 0.00;
-    $item->ventaExenta = 0.00;
+    $item->montoDescu = 0;
+    $item->ventaNoSuj = 0;
+    $item->ventaExenta = 0;
     $item->ventaGravada = round($detalle->preciouni, 2);
-    $item->psv = $item->ventaGravada;
-    $item->noGravado = 0.00;
+    $item->psv = round($detalle->preciouni, 2);
+    $item->noGravado = 0;
     $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);
 
-    // Aplicar tributos según tipo de producto
-    $item->tributos = [
-  [
-    "codigo" => 20,
-    "descripcion" => "IVA 13%",
-    "valor" => round(($detalle->preciouni / 1.13) * 0.13, 2)
-  ]
-];
+    if (stripos($detalle->descripcion, 'Habitacion')3
+    
+    
+    
+    
+    
+    
+    
+    ) {
+        $valorTurismo = round($detalle->preciouni * 0.05, 2);
+        $totalTurismo += $valorTurismo;
+        $item->tributos = ["59"];
+    } else {
+        $item->tributos = [];
+    }
 
-if (stripos($detalle->descripcion, 'habitacion') !== false) {
-    $item->tributos[] = [
-      "codigo" => 59,
-      "descripcion" => "Turismo 5%",
-      "valor" => round(($detalle->preciouni / 1.13) * 0.05, 2)
-    ];
-}
     $totalGravada += $item->ventaGravada;
     $cuerpo[] = $item;
-
-
 }
-
 $dte->cuerpoDocumento = $cuerpo;
 
-$totalIVA = round(sacarivas($detalles), 2);
-$totalPagar = round($totalGravada + $totalIVA + $totalTurismo, 2);
+
     // Configurar resumen
     $dte->resumen = new Resumen();
     $dte->resumen->totalNoSuj = 0.00;
@@ -364,35 +359,31 @@ $totalPagar = round($totalGravada + $totalIVA + $totalTurismo, 2);
     $dte->resumen->descuGravada = 0.00;
     $dte->resumen->porcentajeDescuento = 0.00;
     $dte->resumen->totalDescu = 0.00;
+
+   $dte->resumen->tributos = [];
+if ($totalTurismo > 0) {
+    $dte->resumen->tributos[] = [
+        "codigo" => "59",
+        "descripcion" => "Turismo: alojamiento (5%)",
+        "valor" => round($totalTurismo, 2)
+    ];
+}
+
+
     $dte->resumen->subTotal = round($totalGravada, 2);
     $dte->resumen->ivaRete1 = 0.00;
     $dte->resumen->reteRenta = 0.00;
-    $dte->resumen->montoTotalOperacion = $totalPagar;
+    $dte->resumen->montoTotalOperacion = round($totalGravada, 2);
     $dte->resumen->totalNoGravado = 0.00;
-    $dte->resumen->totalPagar = $totalPagar;
+    $dte->resumen->totalPagar = round($totalGravada, 2);
     $total = round($totalGravada, 2);
     //$dte->resumen->totalLetras = " DÓLARES 00/100";
-    $dte->resumen->totalLetras = numeroALetras($totalPagar);
+    $dte->resumen->totalLetras = numeroALetras($total);
     $dte->resumen->totalIva = round(sacarivas($detalles), 2);
 
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
-
-   $dte->resumen->tributos = [];
-
-$dte->resumen->tributos[] = [
-  "codigo" => 20,
-  "descripcion" => "IVA 13%",
-  "valor" => round(sacarivas($detalles), 2)
-];
-
-if ($totalTurismo > 0) {
-  $dte->resumen->tributos[] = [
-    "codigo" => 59,
-    "descripcion" => "Turismo 5%",
-    "valor" => round($totalTurismo, 2)
-  ];
-}
+   
     $dte->resumen->pagos = [
         [
             "codigo"=>"01",
@@ -486,7 +477,6 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-// header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
 

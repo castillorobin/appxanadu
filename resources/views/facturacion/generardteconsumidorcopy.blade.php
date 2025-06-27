@@ -1,4 +1,4 @@
-
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
 
 
@@ -307,13 +307,9 @@ $totalGravada = 0;
 $totalTurismo = 0;
 $itemnum = 1;
 
-    foreach ($detalles as $detalle) {
-   
-
-    // Configurar cuerpo del documento
+   foreach ($detalles as $detalle) {
     $item = new ItemDocumento();
-    $item->numItem = $itemnum;
-    $itemnum += 1;
+    $item->numItem = $itemnum++;
     $item->tipoItem = 1;
     $item->numeroDocumento = null;
     $item->cantidad = $detalle->cantidad;
@@ -322,20 +318,28 @@ $itemnum = 1;
     $item->uniMedida = 1;
     $item->descripcion = $detalle->descripcion;
     $item->precioUni = round($detalle->preciouni, 2);
-    $item->montoDescu = 0;
-    $item->ventaNoSuj = 0;
-    $item->ventaExenta = 0;
+    $item->montoDescu = 0.00;
+    $item->ventaNoSuj = 0.00;
+    $item->ventaExenta = 0.00;
     $item->ventaGravada = round($detalle->preciouni, 2);
+    $item->psv = $item->ventaGravada;
+    $item->noGravado = 0.00;
+    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);
+
+    // Aplicar tributos según tipo de producto
+    $item->tributos = [59];
+
+
     $totalGravada += $item->ventaGravada;
     $cuerpo[] = $item;
-    $item->psv = round($detalle->preciouni, 2);
-    $item->noGravado = 0;
-    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);  
-    $dte->cuerpoDocumento = [$item];
+
+
 }
+
 $dte->cuerpoDocumento = $cuerpo;
 
-
+$totalIVA = round(sacarivas($detalles), 2);
+$totalPagar = round($totalGravada + $totalIVA + $totalTurismo, 2);
     // Configurar resumen
     $dte->resumen = new Resumen();
     $dte->resumen->totalNoSuj = 0.00;
@@ -351,17 +355,28 @@ $dte->cuerpoDocumento = $cuerpo;
     $dte->resumen->subTotal = round($totalGravada, 2);
     $dte->resumen->ivaRete1 = 0.00;
     $dte->resumen->reteRenta = 0.00;
-    $dte->resumen->montoTotalOperacion = round($totalGravada, 2);
+    $dte->resumen->montoTotalOperacion = $totalPagar;
     $dte->resumen->totalNoGravado = 0.00;
-    $dte->resumen->totalPagar = round($totalGravada, 2);
+    $dte->resumen->totalPagar = $totalPagar;
     $total = round($totalGravada, 2);
     //$dte->resumen->totalLetras = " DÓLARES 00/100";
-    $dte->resumen->totalLetras = numeroALetras($total);
+    $dte->resumen->totalLetras = numeroALetras($totalPagar);
     $dte->resumen->totalIva = round(sacarivas($detalles), 2);
 
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
-   
+
+   $dte->resumen->tributos = [];
+
+//$dte->resumen->tributos[] = 
+
+if ($totalTurismo > 0) {
+  $dte->resumen->tributos[] = [
+    "codigo" => 59,
+    "descripcion" => "Turismo 5%",
+    "valor" => round($totalTurismo, 2)
+  ];
+}
     $dte->resumen->pagos = [
         [
             "codigo"=>"01",
@@ -455,6 +470,9 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-header("Refresh: 3; url=https://xanadusistema.com/facturacion");
+// header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
+
+<p></p>
+<a href="/facturacion" class="btn btn-primary">Regresar</a>
