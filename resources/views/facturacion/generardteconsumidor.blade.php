@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 <?php
 
 
@@ -453,10 +453,6 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-
+///header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
-
-
-<p></p>
-<a href="/facturacion" class="btn btn-primary">Regresar</a>
