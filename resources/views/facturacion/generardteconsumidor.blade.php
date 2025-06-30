@@ -452,17 +452,21 @@ try {
     $respuestaAPI = enviarDTEAPI($dte);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
-    if (isset($respuestaAPI->SelloRecepcion)) {
-        echo "Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
-    } else if (isset($dte->identificacion->codigoGeneracion)) {
-        echo "Sello de recepción: " . $dte->identificacion->codigoGeneracion . "<br>";
-    }
+    if (isset($respuestaAPI->selloRecibido)) {
+    echo "Sello de recepción: " . $respuestaAPI->selloRecibido . "<br>";
+} elseif (isset($respuestaAPI->SelloRecepcion)) {
+    echo "Sello de recepción (SelloRecepcion): " . $respuestaAPI->SelloRecepcion . "<br>";
+} elseif (isset($dte->identificacion->codigoGeneracion)) {
+    echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
+}
     echo "Proceso completado exitosamente.<br>";
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
-///header("Refresh: 3; url=https://xanadusistema.com/facturacion");
+
+
+
 
 ?>
 <p></p>
