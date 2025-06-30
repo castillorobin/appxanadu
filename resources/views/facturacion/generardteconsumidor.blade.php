@@ -261,7 +261,7 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
     // Identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-01-F0000001-0000". $paradte;
+    $dte->identificacion->numeroControl = "DTE-01-M001P001-0000". $paradte;
     $dte->identificacion->codigoGeneracion = getGUID();
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
@@ -466,4 +466,4 @@ try {
 
 ?>
 <p></p>
-<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a>
+<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>

@@ -255,7 +255,7 @@ function crearDTE($fecha_actual, $hora_actual, $detalles, $factura) {
     
     // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-03-F0000001-0000". $paradte; //DTE-01-F0000001-000080000000263
+    $dte->identificacion->numeroControl = "DTE-03-M001P001-0000". $paradte; //DTE-01-F0000001-000080000000263
     $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF8AF-7DF6-476F-B9AE-47CA46035F1B";
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
