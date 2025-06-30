@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
-
+use App\Models\DocumentoDTE;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -465,7 +465,13 @@ try {
     echo "Error: " . $e->getMessage() . "<br>";
 }
 
-
+// Almacenar datos del DTE
+DocumentoDTE::create([
+    'sello_recibido' => $respuestaAPI->selloRecibido ?? null,
+    'codigo_generacion' => $dte->identificacion->codigoGeneracion ?? null,
+    'numero_control' => $dte->identificacion->numeroControl ?? null,
+    'factura' => $detalles[0]->coticode ?? null,
+]);
 
 
 ?>
