@@ -28,7 +28,7 @@
 
                     
                     
-                    <form action="/facturacion/detalleconcabe" method="get">
+                    <form action="/facturacion/detalleconcabeproducto" method="get">
                         @csrf
                                 @method('GET')
 <div class="container">
@@ -131,11 +131,24 @@
 <hr>
         <div class="row">
             
-                  
+                    <div class="mb-3 col-6">
+                        <label class="form-label">Productos</label>
+                        <select class="form-control js-example-basic-single produ" name="producto" id="producto" onChange="getComboA(this)">
+                        <option value="">Seleccionar producto</option>
+                            @foreach($productos as $producto)
+                            <option value="{{$producto->id}}">{{$producto->Nombre }} - {{$producto->Descripcion}} </option>
+                            
+                            
+                            @endforeach 
+                            
+                        </select>
+
+                       
+                    </div>
                   
                     <div class=" col-3 " >
                     
-                    <button type="button" class="btn btn-primary " style="margin-top: 33px;" onClick="habitacion()">Habitacion</button>
+                    
                      
                     </div>   
                 

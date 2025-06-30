@@ -255,18 +255,19 @@ $hora_actual = date("h:i:s");
 
 // Función para crear el DTE
 function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
-    $paradte = 90000000000 + $detalles[0]->id;
+
+ $paradte = 90000000000 + $detalles[0]->id;
     
     $dte = new DocumentoTributarioElectronico();
-
-    // Identificación
+    
+    // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-01-F0000001-0000". $paradte;
-    $dte->identificacion->codigoGeneracion = getGUID();
+    $dte->identificacion->numeroControl = "DTE-01-F0000001-0000". $paradte;  //DTE-01-F0000001-000080000000263
+    $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF1AF-7DF7-436F-B9AE-47CA46035F1B";
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
-
-    // Emisor
+    
+    // Configurar emisor
     $dte->emisor = new Emisor();
     $dte->emisor->nit = "05090211591010";
     $dte->emisor->nrc = "1834284";
@@ -280,13 +281,20 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->emisor->direccion->municipio = "01";
     $dte->emisor->direccion->complemento = "Carretera a los naranjos, Lotificacion San Fernando #3 Poligono B";
     $dte->emisor->telefono = "2429-0920";
+    $dte->emisor->codEstableMH = null;
+    $dte->emisor->codEstable = null;
+    $dte->emisor->codPuntoVentaMH = null;
+    $dte->emisor->codPuntoVenta = null;
     $dte->emisor->correo = "clientesfrecuentes01@gmail.com";
 
-    // Receptor
+    // Configurar receptor
     $dte->receptor = new Receptor();
     $dte->receptor->tipoDocumento = "37";
     $dte->receptor->numDocumento = "012345678";
+    $dte->receptor->nrc = null;
     $dte->receptor->nombre = $cliente[0]->Nombre;
+    $dte->receptor->codActividad = "41001";
+    $dte->receptor->descActividad = "Clientes Frecuentes";
     $dte->receptor->direccion = new Direccion();
     $dte->receptor->direccion->departamento = "02";
     $dte->receptor->direccion->municipio = "01";
@@ -294,102 +302,87 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $dte->receptor->telefono = $cliente[0]->Telefono;
     $dte->receptor->correo = $cliente[0]->Correo;
 
-    // Cuerpo Documento
 $cuerpo = [];
 $totalGravada = 0;
-$totalTurismo = 0;
-$totalIva = 0;
 $itemnum = 1;
+    foreach ($detalles as $detalle) {
+   
 
-foreach ($detalles as $detalle) {
-    $precioFinal = round($detalle->preciouni, 5); // Precio final con IVA y Turismo
-    $cantidad = $detalle->cantidad;
-    $precioFinalTotal = $precioFinal * $cantidad;
-
-    // Cálculos basados en precio final
-    $base = $precioFinalTotal / 1.18;
-    $ivaItem = $base * 0.13;
-    $turismo = $base * 0.05;
-
-    // Redondeo a dos decimales como exige Hacienda
-    $ivaItem = round($ivaItem, 2);
-    $turismo = round($turismo, 2);
-
+    // Configurar cuerpo del documento
     $item = new ItemDocumento();
-    $item->numItem = $itemnum++;
-    $item->tipoItem = 2;
+    $item->numItem = $itemnum;
+    $itemnum += 1;
+    $item->tipoItem = 1;
     $item->numeroDocumento = null;
-    $item->cantidad = $cantidad;
-    $item->codigo = null;
+    $item->cantidad = $detalle->cantidad;
+    $item->codigo = "1";
     $item->codTributo = null;
     $item->uniMedida = 1;
-    $item->descripcion = $detalle->descripcion ;
-    $item->precioUni = $precioFinal - $turismo;
+    $item->descripcion = $detalle->descripcion;
+    $item->precioUni = round($detalle->preciouni, 2);
     $item->montoDescu = 0;
     $item->ventaNoSuj = 0;
     $item->ventaExenta = 0;
-    $item->ventaGravada = round($precioFinalTotal, 2) - $turismo;
-    $item->tributos = ["59"];
-    $item->psv = 0;
-    $item->ivaItem = $ivaItem;
-    $item->noGravado = 0;
-
-    $cuerpo[] = $item;
-
+    $item->ventaGravada = round($detalle->preciouni, 2);
     $totalGravada += $item->ventaGravada;
-    $totalTurismo += $turismo;
-    $totalIva += $ivaItem;
+    $cuerpo[] = $item;
+    $item->psv = round($detalle->preciouni, 2);
+    $item->noGravado = 0;
+    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);  
+    $dte->cuerpoDocumento = [$item];
 }
-
 $dte->cuerpoDocumento = $cuerpo;
 
-    // Resumen
-  $dte->resumen = new Resumen();
-$dte->resumen->totalNoSuj = 0;
-$dte->resumen->totalExenta = 0;
-$dte->resumen->totalGravada = round($totalGravada, 2);
-$dte->resumen->subTotalVentas = round($totalGravada, 2);
-$dte->resumen->descuNoSuj = 0;
-$dte->resumen->descuExenta = 0;
-$dte->resumen->descuGravada = 0;
-$dte->resumen->porcentajeDescuento = 0;
-$dte->resumen->totalDescu = 0;
-$dte->resumen->tributos = [
-    [
-        "codigo" => "59",
-        "descripcion" => "Turismo: Por alojamiento(5%)",
-        "valor" => round($totalTurismo, 2)
-    ]
-];
-$dte->resumen->subTotal = round($totalGravada, 2);
-$dte->resumen->ivaRete1 = 0;
-$dte->resumen->reteRenta = 0;
-$dte->resumen->montoTotalOperacion = round($totalGravada, 2) + $turismo;
-$dte->resumen->totalNoGravado = 0;
-$dte->resumen->totalPagar = round($totalGravada, 2) + $turismo;
-$dte->resumen->totalLetras =numeroALetras(round($dte->resumen->totalPagar, 2)); 
-$dte->resumen->totalIva = round($totalIva, 2);
-$dte->resumen->saldoFavor = 0;
-$dte->resumen->condicionOperacion = 1;
 
-$dte->resumen->pagos = [
-    [
-        "codigo" => "01",
-        "montoPago" => round($totalGravada, 2) + $turismo,
-        "referencia" => null,
-        "plazo" => null,
-        "periodo" => null
-    ]
-];
+    // Configurar resumen
+    $dte->resumen = new Resumen();
+    $dte->resumen->totalNoSuj = 0.00;
+    $dte->resumen->totalExenta = 0.00;
+    $dte->resumen->totalGravada = round($totalGravada, 2);
+   //dd(round(sacartotal($detalles), 2));
+    $dte->resumen->descuNoSuj = 0.00;
+    $dte->resumen->subTotalVentas = round($totalGravada, 2);
+    $dte->resumen->descuExenta = 0.00;
+    $dte->resumen->descuGravada = 0.00;
+    $dte->resumen->porcentajeDescuento = 0.00;
+    $dte->resumen->totalDescu = 0.00;
+    $dte->resumen->subTotal = round($totalGravada, 2);
+    $dte->resumen->ivaRete1 = 0.00;
+    $dte->resumen->reteRenta = 0.00;
+    $dte->resumen->montoTotalOperacion = round($totalGravada, 2);
+    $dte->resumen->totalNoGravado = 0.00;
+    $dte->resumen->totalPagar = round($totalGravada, 2);
+    $total = round($totalGravada, 2);
+    //$dte->resumen->totalLetras = " DÓLARES 00/100";
+    $dte->resumen->totalLetras = numeroALetras($total);
+    $dte->resumen->totalIva = round(sacarivas($detalles), 2);
 
+    $dte->resumen->saldoFavor = 0.00;
+    $dte->resumen->condicionOperacion = 1;
+   
+    $dte->resumen->pagos = [
+        [
+            "codigo"=>"01",
+            "montoPago"=>$totalGravada,
+            "referencia"=>"0000",
+            "periodo"=>null,
+            "plazo"=>null
+        ]
+    ];
+    
+    $dte->resumen->numPagoElectronico = null;
 
-
-$dte->resumen->numPagoElectronico = "";
-
-    // Extensión
-    $dte->extension = null;
+    // Configurar extensión
+    $dte->extension = new Extension();
+    $dte->extension->nombEntrega = null;
+    $dte->extension->docuEntrega = null;
+    $dte->extension->nombRecibe = null;
+    $dte->extension->docuRecibe = null;
+    $dte->extension->observaciones = null;
+    $dte->extension->placaVehiculo = null;
 
     return $dte;
+    
 }
 //$dte = crearDTE($fecha_actual, $cliente, $hora_actual);
 
@@ -411,8 +404,6 @@ function enviarDTEAPI($dte) {
         //'CorreoCliente' => "clientesfrecuentes01@gmail.com"
         'CorreoCliente' => "poncemarito2019@gmail.com"
     ];
-
-  //  echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
 
    // echo "<pre>JSON enviado a la API:<br>" . json_encode($datos, JSON_PRETTY_PRINT) . "</pre>";
 

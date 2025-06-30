@@ -75,6 +75,12 @@ Route::get('/facturacion/fiscalencatur', [App\Http\Controllers\FacturaController
 Route::get('/facturacion/detalleaddfiscaltur', [App\Http\Controllers\FacturaController::class, 'detalleaddfiscaltur'])->name('detalleaddfiscaltur');
 Route::get('/facturacion/generardtefiscaltur/{id}', [App\Http\Controllers\FacturaController::class, 'generardtefiscaltur'])->name('generardtefiscaltur');
 
+Route::get('/facturacion/productos', [App\Http\Controllers\FacturaController::class, 'productos'])->name('productos');
+Route::get('/facturacion/detalleconcabeproducto', [App\Http\Controllers\FacturaController::class, 'detalleconcabeproducto'])->name('detalleconcabeproducto');
+Route::get('/facturacion/detalleaddproducto', [App\Http\Controllers\FacturaController::class, 'detalleaddproducto'])->name('detalleaddproducto');
+Route::get('/facturacion/generardteconsumidorproducto/{id}', [App\Http\Controllers\FacturaController::class, 'generardteconsumidorproducto'])->name('generardteconsumidorproducto');
+
+
 // Control
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
 Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');

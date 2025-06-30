@@ -444,6 +444,100 @@ $ultimoid = Factura::latest('id')->first();
         return view('facturacion.generardtefiscaltur', compact('factura', 'detalles'));
     }
 
+    public function productos()
+    {
+        $clientes = Cliente::all();
+        $productos = Producto::all();
+        
+        return view('facturacion.crearconsumidorproducto', compact('productos', 'clientes'));
+    }
+
+    public function detalleconcabeproducto(Request $request)
+    {
+$ultimoid = Factura::latest('id')->first();
+       $idcompr = $ultimoid->id + 1;
+       $date = Carbon::now();
+            $date = $date->format('Y');
+            $codigo = "$date".$idcompr;
+        
+            //$newDate = date("Y-m-d", strtotime($request->get('fecha')));
+         //   $newDate = DateTime::createFromFormat('Y-m-d', date('Y-m-d', strtotime($request->get('fecha'))));
+
+
+
+
+
+        //  dd($newDate->format('Y-m-d'));
+
+
+        $cotienca = new Factura();
+        $cotienca->cliente = $request->get('cliente');
+        $cotienca->codigo = $codigo;
+       // $cotienca->fecha = $newDate->format('Y-m-d');
+        
+        $cotienca->DUI = $request->get('dui');
+        $cotienca->direccion = $request->get('direccion');
+        
+
+        $cotienca->save();
+        $cotiactual = Factura::where('codigo', $codigo)->get();
+
+       $linea = new Cotidetalle();
+       $linea->coticode = $codigo;
+       $linea->descripcion = $request->get('detalle');
+       $linea->cantidad = $request->get('cantidad');
+       $linea->preciouni = $request->get('precio');
+       $linea->total = $request->get('total');
+      
+
+       $linea->save();
+       $detalles = Cotidetalle::where('coticode', $codigo)->get();
+
+
+        //$detalles=Cotidetalle::all();
+        //$clientes = Cliente::all();
+        $productos = Producto::all();
+        return view('facturacion.agregardetalleproducto', compact('productos', 'detalles', 'cotiactual'));
+    }
+
+    public function detalleaddproducto(Request $request)
+     {
+        //$detalles = new Cotidetalle();
+
+        $codigo = $request->get('codigo');
+
+        $detalle = new Cotidetalle();
+        
+        $detalle->coticode = $codigo;
+        $detalle->descripcion = $request->get('detalle');
+        $detalle->cantidad = $request->get('cantidad');
+        $detalle->preciouni = $request->get('precio');
+        $detalle->total = $request->get('total');
+       
+        $detalle->save();
+         
+        
+
+        $cotiactual = Factura::where('codigo', $codigo)->get();
+       //$detalles = Cotidetalle::all();
+       $detalles = Cotidetalle::where('coticode', $codigo)->get();
+       //$clientes = Cliente::all();
+        $productos = Producto::all();
+       return view('facturacion.agregardetalleproducto', compact('productos', 'detalles', 'cotiactual'));
+         
+     }
+
+     public function generardteconsumidorproducto($codigo)
+    {
+        $factura = Factura::where('codigo', $codigo)->get();
+        $detalles = Cotidetalle::where('coticode', $codigo)->get();
+
+        $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
+
+        $actual = $factura[0]->codigo;
+        return view('facturacion.generardteconsumidorproducto', compact('actual', 'detalles', 'cliente'));
+    }
+
     /**
      * Store a newly created resource in storage.  crearfiscal
      */

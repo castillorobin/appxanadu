@@ -308,7 +308,7 @@ $cuerpo = [];
 $totalGravada = 0;
 $itemnum = 1;
 $totalTurismo = 0;
-
+$totaliv = 0;
 foreach ($detalles as $detalle) {
     $item = new ItemDocumento();
     $item->numItem = $itemnum++;
@@ -324,23 +324,23 @@ foreach ($detalles as $detalle) {
     $item->ventaExenta = 0;
     $item->noGravado = 0;
     $item->psv = $item->precioUni;
-
+$item->tributos = ["D4"];
     $esHabitacion = ($detalle->descripcion == "Habitacion");
-    $precioBruto = $esHabitacion ? $item->precioUni / 1.18 : $item->precioUni / 1.13;
+    $precioBruto = $esHabitacion ? $detalle->preciouni / 1.18 : $item->precioUni / 1.13;
     $iva = round($precioBruto * 0.13, 2);
 
     $item->ventaGravada = $item->precioUni;
     $item->ivaItem = $iva;
-
+$totaliv +=  $iva;
     if ($esHabitacion) {
         $turismo = round($precioBruto * 0.05, 2);
-
+/*
         $tributo = new Tributo();
         $tributo->codigo = "59";
         $tributo->descripcion = "Impuesto a la industria turística";
         $tributo->valor = $turismo;
-
-        $item->tributos = [$tributo];
+*/
+        $item->tributos = ["59"];
         $totalTurismo += $turismo;
     }
 
