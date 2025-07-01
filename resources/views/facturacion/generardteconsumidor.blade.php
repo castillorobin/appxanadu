@@ -403,7 +403,7 @@ function enviarDTEAPI($dte) {
         'Ambiente' => '01',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "20Xanadu25.",
+        'PasswordPrivado' => "25Xanadu20.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
@@ -412,7 +412,7 @@ function enviarDTEAPI($dte) {
         'CorreoCliente' => "poncemarito2019@gmail.com"
     ];
 
-  //  echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
+  // echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
 
    // echo "<pre>JSON enviado a la API:<br>" . json_encode($datos, JSON_PRETTY_PRINT) . "</pre>";
 
@@ -461,17 +461,19 @@ try {
 }
     echo "Proceso completado exitosamente.<br>";
 
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage() . "<br>";
-}
-
-// Almacenar datos del DTE
+    // Almacenar datos del DTE
 DocumentoDTE::create([
     'sello_recibido' => $respuestaAPI->selloRecibido ?? null,
     'codigo_generacion' => $dte->identificacion->codigoGeneracion ?? null,
     'numero_control' => $dte->identificacion->numeroControl ?? null,
     'factura' => $detalles[0]->coticode ?? null,
 ]);
+
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage() . "<br>";
+}
+
+
 
 
 ?>

@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
-
+use App\Models\DocumentoDTE;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -305,6 +305,7 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 $cuerpo = [];
 $totalGravada = 0;
 $itemnum = 1;
+$totaliv = 0;
     foreach ($detalles as $detalle) {
    
 
@@ -323,12 +324,13 @@ $itemnum = 1;
     $item->montoDescu = 0;
     $item->ventaNoSuj = 0;
     $item->ventaExenta = 0;
-    $item->ventaGravada = round($detalle->preciouni, 2);
+    $item->ventaGravada = round($detalle->preciouni * $detalle->cantidad, 2);
     $totalGravada += $item->ventaGravada;
     $cuerpo[] = $item;
-    $item->psv = round($detalle->preciouni, 2);
+    $item->psv = $item->ventaGravada;
     $item->noGravado = 0;
-    $item->ivaItem = round(($detalle->preciouni / 1.13) * 0.13, 2);  
+    $item->ivaItem = round(($item->ventaGravada / 1.13) * 0.13, 2);  
+    $totaliv += $item->ivaItem;
     $dte->cuerpoDocumento = [$item];
 }
 $dte->cuerpoDocumento = $cuerpo;
@@ -355,7 +357,7 @@ $dte->cuerpoDocumento = $cuerpo;
     $total = round($totalGravada, 2);
     //$dte->resumen->totalLetras = " DÓLARES 00/100";
     $dte->resumen->totalLetras = numeroALetras($total);
-    $dte->resumen->totalIva = round(sacarivas($detalles), 2);
+    $dte->resumen->totalIva = round($totaliv, 2);
 
     $dte->resumen->saldoFavor = 0.00;
     $dte->resumen->condicionOperacion = 1;
@@ -384,7 +386,9 @@ $dte->cuerpoDocumento = $cuerpo;
     return $dte;
     
 }
-//$dte = crearDTE($fecha_actual, $cliente, $hora_actual);
+//$dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles);
+//echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
+
 
 
 // Función para enviar DTE a la API
@@ -396,7 +400,7 @@ function enviarDTEAPI($dte) {
         'Ambiente' => '01',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "20Xanadu25.",
+        'PasswordPrivado' => "25Xanadu20.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
@@ -443,12 +447,22 @@ try {
     $respuestaAPI = enviarDTEAPI($dte);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
-    if (isset($respuestaAPI->SelloRecepcion)) {
-        echo "Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
-    } else if (isset($dte->identificacion->codigoGeneracion)) {
-        echo "Sello de recepción: " . $dte->identificacion->codigoGeneracion . "<br>";
-    }
+    if (isset($respuestaAPI->selloRecibido)) {
+    echo "Sello de recepción: " . $respuestaAPI->selloRecibido . "<br>";
+} elseif (isset($respuestaAPI->SelloRecepcion)) {
+    echo "Sello de recepción (SelloRecepcion): " . $respuestaAPI->SelloRecepcion . "<br>";
+} elseif (isset($dte->identificacion->codigoGeneracion)) {
+    echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
+}
     echo "Proceso completado exitosamente.<br>";
+
+    // Almacenar datos del DTE
+DocumentoDTE::create([
+    'sello_recibido' => $respuestaAPI->selloRecibido ?? null,
+    'codigo_generacion' => $dte->identificacion->codigoGeneracion ?? null,
+    'numero_control' => $dte->identificacion->numeroControl ?? null,
+    'factura' => $detalles[0]->coticode ?? null,
+]);
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
