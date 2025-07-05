@@ -81,6 +81,11 @@ Route::get('/facturacion/detalleaddproducto', [App\Http\Controllers\FacturaContr
 Route::get('/facturacion/generardteconsumidorproducto/{id}', [App\Http\Controllers\FacturaController::class, 'generardteconsumidorproducto'])->name('generardteconsumidorproducto');
 
 
+Route::get('/facturacion/crearexenta', [App\Http\Controllers\FacturaController::class, 'crearexenta'])->name('crearexenta');
+Route::get('/facturacion/detalleconcabeexenta', [App\Http\Controllers\FacturaController::class, 'detalleconcabeexenta'])->name('detalleconcabeexenta');
+Route::get('/facturacion/detalleaddexenta', [App\Http\Controllers\FacturaController::class, 'detalleaddexenta'])->name('detalleaddexenta');
+Route::get('/facturacion/generardteconsumidorexenta/{id}', [App\Http\Controllers\FacturaController::class, 'generardteconsumidorexenta'])->name('generardteconsumidorexenta');
+
 // Control
 Route::get('/control', [App\Http\Controllers\ControlController::class, 'index'])->name('indexcontrol');
 Route::get('/control/crear', [App\Http\Controllers\ControlController::class, 'create'])->name('crearcon');

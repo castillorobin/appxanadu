@@ -375,8 +375,8 @@ return [
             'icon' => 'fas fa-truck',
         ],
         [
-            'text' => 'No gravadas',
-            'url' => '/',
+            'text' => 'Facturas Exentas',
+            'url' => '/facturacion/crearexenta',
             'icon' => 'fas fa-truck',
         ],
 
