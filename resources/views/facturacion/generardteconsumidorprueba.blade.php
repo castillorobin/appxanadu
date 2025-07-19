@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
-
+use App\Models\DteEmitido;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -98,27 +98,29 @@ function numeroALetras($numero) {
 function sacarivas($detalles){
     $iva = 0;
     foreach ($detalles as $detalle) {
-        $base = $detalle->total / 1.13;
-        $iva += round($base * 0.13, 2);
+        $iva += $detalle->preciouni;
+
     }
-    return $iva;
+   $ivatotal = (($iva / 1.13) * 0.13);
+    return $ivatotal;
 }
 
 function sacartotal($detalles){
-    $totalBase = 0;
+    $total = 0;
     foreach ($detalles as $detalle) {
-        // Suponiendo que el total viene con IVA incluido
-        $base = $detalle->total / 1.13;
-        $totalBase += round($base, 2);
+        $total += $detalle->preciouni;
+
     }
-    return $totalBase;
+    return $total;
 }
+
+
 
 // Clases para estructurar el DTE
 class Identificacion {
-    public $version = 3;
-    public $ambiente = "01";
-    public $tipoDte = "03"; 
+    public $version = 1;
+    public $ambiente = "00";
+    public $tipoDte = "01"; 
     public $numeroControl;
     public $codigoGeneracion;
     public $tipoModelo = 1;
@@ -151,13 +153,14 @@ class Emisor {
     public $codPuntoVentaMH;
     public $codPuntoVenta;
     public $correo;
+    //public $tributos;
 }
 
 class Receptor {
-    public $nit;
     public $nrc;
+    public $tipoDocumento;
+    public $numDocumento;
     public $nombre;
-    public $nombreComercial;
     public $codActividad;
     public $descActividad;
     public $direccion;
@@ -181,7 +184,9 @@ class ItemDocumento {
     public $ventaGravada;
     public $tributos;
     public $psv;
+    public $ivaItem;
     public $noGravado;
+
 }
 
 class Pago {
@@ -210,7 +215,6 @@ class Resumen {
     public $totalDescu;
     public $subTotal;
     public $ivaRete1;
-    public $ivaPerci1;
     public $reteRenta;
     public $montoTotalOperacion;
     public $totalNoGravado;
@@ -221,6 +225,7 @@ class Resumen {
     public $pagos;
     public $tributos;
     public $numPagoElectronico;
+    public $totalIva;
 }
 
 class Extension {
@@ -247,20 +252,21 @@ class DocumentoTributarioElectronico {
 date_default_timezone_set('America/El_Salvador');
 $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
- 
+
 // Función para crear el DTE
-function crearDTE($fecha_actual, $hora_actual, $detalles, $factura) {
+function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     $paradte = 90000000000 + $detalles[0]->id;
-    $dte = new DocumentoTributarioElectronico();
     
-    // Configurar identificación
+    $dte = new DocumentoTributarioElectronico();
+
+    // Identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-03-M001P001-0000". $paradte; //DTE-01-F0000001-000080000000263
-    $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF8AF-7DF6-476F-B9AE-47CA46035F1B";
+    $dte->identificacion->numeroControl = "DTE-01-M001P001-0000". $paradte;
+    $dte->identificacion->codigoGeneracion = getGUID();
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
-    
-    // Configurar emisor
+
+    // Emisor
     $dte->emisor = new Emisor();
     $dte->emisor->nit = "05090211591010";
     $dte->emisor->nrc = "1834284";
@@ -274,134 +280,139 @@ function crearDTE($fecha_actual, $hora_actual, $detalles, $factura) {
     $dte->emisor->direccion->municipio = "01";
     $dte->emisor->direccion->complemento = "Carretera a los naranjos, Lotificacion San Fernando #3 Poligono B";
     $dte->emisor->telefono = "2429-0920";
-    $dte->emisor->codEstableMH = null;
-    $dte->emisor->codEstable = null;
-    $dte->emisor->codPuntoVentaMH = null;
-    $dte->emisor->codPuntoVenta = null;
     $dte->emisor->correo = "clientesfrecuentes01@gmail.com";
 
-    // Configurar receptor
+    // Receptor
     $dte->receptor = new Receptor();
-    $dte->receptor->nit = $factura[0]->nit;
-    $dte->receptor->nrc = $factura[0]->nrc;
-    $dte->receptor->nombre = $factura[0]->nombre;
-    $dte->receptor->nombreComercial = $factura[0]->comercial;
-    $dte->receptor->codActividad = $factura[0]->codactividad;
-    $dte->receptor->descActividad = $factura[0]->actividad;
+    $dte->receptor->tipoDocumento = "37";
+    $dte->receptor->numDocumento = "012345678";
+    $dte->receptor->nombre = $cliente[0]->Nombre;
     $dte->receptor->direccion = new Direccion();
-    $dte->receptor->direccion->departamento = $factura[0]->departamento;
-    $dte->receptor->direccion->municipio = $factura[0]->municipio;
-    $dte->receptor->direccion->complemento = $factura[0]->direccion;
-    $dte->receptor->telefono = $factura[0]->telefono;
-    $dte->receptor->correo = $factura[0]->correo;
+    $dte->receptor->direccion->departamento = "02";
+    $dte->receptor->direccion->municipio = "01";
+    $dte->receptor->direccion->complemento = $cliente[0]->Direccion;
+    $dte->receptor->telefono = $cliente[0]->Telefono;
+    $dte->receptor->correo = $cliente[0]->Correo;
 
-
-   $cuerpo = [];
+    // Cuerpo Documento
+$cuerpo = [];
 $totalGravada = 0;
+$totalTurismo = 0;
+$totalIva = 0;
 $itemnum = 1;
 
 foreach ($detalles as $detalle) {
+    $precioFinal = round($detalle->preciouni, 5); // Precio final con IVA y Turismo
+    $cantidad = $detalle->cantidad;
+    $precioFinalTotal = $precioFinal * $cantidad;
+
+    // Cálculos basados en precio final
+    $base = $precioFinalTotal / 1.18;
+    $ivaItem = $base * 0.13;
+    $turismo = $base * 0.05;
+
+    // Redondeo a dos decimales como exige Hacienda
+    $ivaItem = round($ivaItem, 2);
+    $turismo = round($turismo, 2);
+
     $item = new ItemDocumento();
     $item->numItem = $itemnum++;
-    $item->tipoItem = 3;
+    $item->tipoItem = 2;
     $item->numeroDocumento = null;
-    $item->cantidad = $detalle->cantidad;
-
-    $precioConIVA = round($detalle->total, 2);
-   
-    $baseSinIVA = round($precioConIVA / 1.13, 2);
-     
-    $precioUnitarioBase = $baseSinIVA / $item->cantidad;
-    
-    $item->codigo = "27";
+    $item->cantidad = $cantidad;
+    $item->codigo = null;
     $item->codTributo = null;
     $item->uniMedida = 59;
-    $item->descripcion = $detalle->descripcion;
-    $item->precioUni = round($precioUnitarioBase, 2);
-//dd(round($item->precioUni ));
-    $item->montoDescu = 0.00;
-    $item->ventaNoSuj = 0.00;
-    $item->ventaExenta = 0.00;
+    $item->descripcion = $detalle->descripcion ;
+    $item->precioUni = $precioFinal - $turismo;
+    $item->montoDescu = 0;
+    $item->ventaNoSuj = 0;
+    $item->ventaExenta = 0;
+    $item->ventaGravada = round($precioFinalTotal, 2) - $turismo;
+    $item->tributos = ["59"];
+    $item->psv = 0;
+    $item->ivaItem = $ivaItem;
+    $item->noGravado = 0;
 
-    $item->ventaGravada = round($baseSinIVA, 2);
-   
-    $item->psv = $item->ventaGravada;
-    
-    $item->noGravado = 0.00;
-    $item->tributos = ["20"];
+    $cuerpo[] = $item;
 
     $totalGravada += $item->ventaGravada;
-    $cuerpo[] = $item;
+    $totalTurismo += $turismo;
+    $totalIva += $ivaItem;
 }
 
 $dte->cuerpoDocumento = $cuerpo;
 
-
-// Calcular totales base y IVA
-$totalBase = round(sacartotal($detalles), 2);
-$totalIVA = round($totalBase * 0.13, 2);
-$totalPagar = $totalBase + $totalIVA;
-
-$dte->resumen = new Resumen();
-$dte->resumen->totalNoSuj = 0.00;
-$dte->resumen->totalExenta = 0.00;
+    // Resumen
+  $dte->resumen = new Resumen();
+$dte->resumen->totalNoSuj = 0;
+$dte->resumen->totalExenta = 0;
 $dte->resumen->totalGravada = round($totalGravada, 2);
 $dte->resumen->subTotalVentas = round($totalGravada, 2);
-$dte->resumen->descuNoSuj = 0.00;
-$dte->resumen->descuExenta = 0.00;
-$dte->resumen->descuGravada = 0.00;
-$dte->resumen->porcentajeDescuento = 0.00;
-$dte->resumen->totalDescu = 0.00;
-$dte->resumen->subTotal = round($totalGravada, 2);
-$dte->resumen->ivaRete1 = 0.00;
-$dte->resumen->ivaPerci1 = 0.00;
-$dte->resumen->reteRenta = 0.00;
-$dte->resumen->montoTotalOperacion = round($totalPagar, 2);
-$dte->resumen->totalNoGravado = 0.00;
-$dte->resumen->totalPagar = round($totalPagar, 2);
-$dte->resumen->totalLetras = numeroALetras($totalPagar);
-$dte->resumen->saldoFavor = 0.00;
-$dte->resumen->condicionOperacion = 1;
-$dte->resumen->pagos = null;
-
+$dte->resumen->descuNoSuj = 0;
+$dte->resumen->descuExenta = 0;
+$dte->resumen->descuGravada = 0;
+$dte->resumen->porcentajeDescuento = 0;
+$dte->resumen->totalDescu = 0;
 $dte->resumen->tributos = [
     [
-        "codigo" => "20",
-        "descripcion" => "Impuesto al Valor Agregado 13%",
-        "valor" => $totalIVA
+        "codigo" => "59",
+        "descripcion" => "Turismo: Por alojamiento(5%)",
+        "valor" => round($totalTurismo, 2)
+    ]
+];
+$dte->resumen->subTotal = round($totalGravada, 2);
+$dte->resumen->ivaRete1 = 0;
+$dte->resumen->reteRenta = 0;
+$dte->resumen->montoTotalOperacion = round($totalGravada, 2) + $turismo;
+$dte->resumen->totalNoGravado = 0;
+$dte->resumen->totalPagar = round($totalGravada, 2) + $turismo;
+$dte->resumen->totalLetras =numeroALetras(round($dte->resumen->totalPagar, 2)); 
+$dte->resumen->totalIva = round($totalIva, 2);
+$dte->resumen->saldoFavor = 0;
+$dte->resumen->condicionOperacion = 1;
+
+$dte->resumen->pagos = [
+    [
+        "codigo" => "01",
+        "montoPago" => round($totalGravada, 2) + $turismo,
+        "referencia" => null,
+        "plazo" => null,
+        "periodo" => null
     ]
 ];
 
-$dte->resumen->numPagoElectronico = null;
 
-    // Configurar extensión
-    $dte->extension = new Extension();
-    $dte->extension->nombEntrega = null;
-    $dte->extension->docuEntrega = null;
-    $dte->extension->nombRecibe = null;
-    $dte->extension->docuRecibe = null;
-    $dte->extension->observaciones = null;
-    $dte->extension->placaVehiculo = null;
+
+$dte->resumen->numPagoElectronico = "";
+
+    // Extensión
+    $dte->extension = null;
 
     return $dte;
 }
+//$dte = crearDTE($fecha_actual, $cliente, $hora_actual);
+
 
 // Función para enviar DTE a la API
+
 function enviarDTEAPI($dte) {
     $datos = [
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
-        'Ambiente' => '01',
+        'Ambiente' => '00',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "25Xanadu20.",
-        'TipoDte' => '03',
+        'PasswordPrivado' => "20Xanadu25.",
+        'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
-        'VersionDte' => 3,
+        'VersionDte' => 1,
         //'CorreoCliente' => "clientesfrecuentes01@gmail.com"
         'CorreoCliente' => "poncemarito2019@gmail.com"
     ];
+
+  // echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
 
    // echo "<pre>JSON enviado a la API:<br>" . json_encode($datos, JSON_PRETTY_PRINT) . "</pre>";
 
@@ -435,25 +446,40 @@ function enviarDTEAPI($dte) {
 // Iniciar proceso automáticamente al abrir el archivo desde el navegador
 try {
     echo "Iniciando generación de DTE...<br>";
-    $dte = crearDTE($fecha_actual, $hora_actual, $detalles, $factura);
+    $dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
     $respuestaAPI = enviarDTEAPI($dte);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
-    if (isset($respuestaAPI->SelloRecepcion)) {
-        echo "Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
-    } else if (isset($dte->identificacion->codigoGeneracion)) {
-        echo "Sello de recepción: " . $dte->identificacion->codigoGeneracion . "<br>";
-    }
-
-    echo "<br> Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
+    if (isset($respuestaAPI->selloRecibido)) {
+    echo "Sello de recepción: " . $respuestaAPI->selloRecibido . "<br>";
+} elseif (isset($respuestaAPI->SelloRecepcion)) {
+    echo "Sello de recepción (SelloRecepcion): " . $respuestaAPI->SelloRecepcion . "<br>";
+} elseif (isset($dte->identificacion->codigoGeneracion)) {
+    echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
+}
     echo "Proceso completado exitosamente.<br>";
+
+    // Almacenar datos del DTE
+DteEmitido::create([
+    'sello_recibido' => $respuestaAPI->selloRecibido ?? null,
+    'codigo_generacion' => $dte->identificacion->codigoGeneracion ?? null,
+    'numero_control' => $dte->identificacion->numeroControl ?? null,
+    'factura' => $detalles[0]->coticode ?? null,
+    'tipo_documento' => 01 ?? null,
+    'fecha_emision' => $dte->identificacion->fecEmi ?? null,
+    'json_original' => json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?? null,
+
+]);
+
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
 
 
+
+
 ?>
 <p></p>
-<a href="/facturacion/crearfiscal" class="btn btn-primary">Regresar</a>
+<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>

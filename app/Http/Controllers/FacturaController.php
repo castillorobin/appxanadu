@@ -196,7 +196,7 @@ $ultimoid = Factura::latest('id')->first();
         $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardteconsumidor', compact('actual', 'detalles', 'cliente'));
+        return view('facturacion.generardteconsumidorprueba', compact('actual', 'detalles', 'cliente'));
     }
 
      public function crearfiscal()

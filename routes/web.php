@@ -1,6 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DteEmitidoController;
+
+Route::prefix('dtes')->group(function () {
+    Route::get('/', [DteEmitidoController::class, 'index'])->name('dtes.index');
+    Route::get('/{id}', [DteEmitidoController::class, 'show'])->name('dtes.show');
+    Route::post('/{id}/anular', [DteEmitidoController::class, 'anular'])->name('dtes.anular');
+});
 
 Route::get('/', function () {
     return view('/auth/login');

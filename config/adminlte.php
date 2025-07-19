@@ -379,6 +379,11 @@ return [
             'url' => '/facturacion/crearexenta',
             'icon' => 'fas fa-truck',
         ],
+         [
+            'text' => 'Adminsitrar DTEs',
+            'url' => '/dtes',
+            'icon' => 'fas fa-truck',
+        ],
 
 
        
