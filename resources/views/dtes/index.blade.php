@@ -42,9 +42,9 @@
 <td>{{ $dte->codigo_generacion }}</td>
 <td>{{ $dte->created_at->format('d/m/Y H:i') }}</td>
 <td>
-@if($dte->pdf_path)
+
 <a href="{{ route('dtes.verPdf', $dte->id) }}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
-@endif
+
 @if($dte->json_legible_path || $dte->json_firmado_path)
 <a href="{{ route('dtes.descargarJson', $dte->id) }}" class="btn btn-sm btn-success">Descargar JSON</a>
 @endif
@@ -58,10 +58,5 @@
 {{ $dtes->links() }}
 
 
-<div class="mt-3 small text-muted">
-<p>
-Nota: el archivo <em>Firmado</em> es el JWS (no debe alterarse ni reenviarse modificado). El archivo <em>Legible</em> es un JSON de referencia para contador que incluye <code>selloRecibido</code> y <code>firmaElectronica</code>.
-</p>
-</div>
 </div>
 @endsection

@@ -478,7 +478,7 @@ $dteArray = json_decode(json_encode($dte), true);
     // 1) Guardar JSON ORIGINAL
     $rutaOriginal = "dtes_json/original_{$codigoGeneracion}.json";
     Storage::put($rutaOriginal, json_encode($dteArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
+    
     // 2) Construir JSON LEGIBLE PARA CONTADOR
     $legible = $dteArray;
     $legible['identificacion']['codigoGeneracion'] = $codigoGeneracion;
@@ -497,7 +497,8 @@ $dteArray = json_decode(json_encode($dte), true);
     }
 
     $rutaLegible = "dtes_json/legible_{$codigoGeneracion}.json";
-    Storage::put($rutaLegible, json_encode($legible, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+   // Storage::put($rutaLegible, json_encode($legible, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    Storage::put($rutaLegible, json_encode($legible, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
     // 3) Guardar JWS firmado crudo
     $rutaFirmado = null;
@@ -509,13 +510,13 @@ $dteArray = json_decode(json_encode($dte), true);
 
 /*
 // 4) Generar PDF versión legible para entrega
-$pdf = Pdf::loadView('dtes.plantilla_pdf', ['dte' => $legible]);
+$pdf = Pdf::loadView('dtes.plantilla_pdf', ['dte' => $legible]); // $legible = tu JSON legible
 $rutaPdf = "dtes_pdfs/dte_{$codigoGeneracion}.pdf";
 Storage::put($rutaPdf, $pdf->output());
 */
 
 // 5) Persistir en BD
-return DocumentoDTE::create([
+DocumentoDTE::create([
 'sello_recibido' => $selloRecibido,
 'codigo_generacion' => $codigoGeneracion,
 'numero_control' => $numControl,
@@ -534,8 +535,8 @@ return DocumentoDTE::create([
     echo "Error: " . $e->getMessage() . "<br>";
 }
 
-
 ?>
 
 <p></p>
 <a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>
+

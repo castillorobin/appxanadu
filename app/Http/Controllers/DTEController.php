@@ -36,8 +36,26 @@ return Storage::download($path);
 
 
 public function verPdf($id) {
-$dte = DocumentoDTE::findOrFail($id);
-return response()->file(storage_path("app/{$dte->pdf_path}"));
+ $dte = \App\Models\DocumentoDTE::findOrFail($id);
+
+    // 1) Carga el JSON legible desde storage
+    if (!$dte->json_legible_path || !Storage::exists($dte->json_legible_path)) {
+        abort(404, 'No hay JSON legible para generar PDF.');
+    }
+
+    $json = Storage::get($dte->json_legible_path);
+    $legible = json_decode($json, true);
+
+    if (!is_array($legible)) {
+        abort(500, 'JSON legible inválido.');
+    }
+
+    // 2) Genera PDF desde la vista (sin guardar en disco)
+    $pdf = Pdf::loadView('dtes.plantilla_pdf', ['dte' => $legible]);
+
+    // 3) Devuelve el PDF en línea (inline)
+    $nombre = 'dte_'.$legible['identificacion']['codigoGeneracion'].'.pdf';
+    return $pdf->stream($nombre); // o ->download($nombre) si prefieres forzar descarga
 }
 
 
