@@ -17,10 +17,21 @@ return new class extends Migration
     $table->uuid('codigo_generacion')->nullable();
     $table->string('numero_control')->nullable();
     $table->string('factura')->nullable();
-
-            $table->timestamps();
+    $table->dateTime('fecha_generacion')->nullable();
+$table->string('tipo_dte')->nullable();
+// Rutas a artefactos
+$table->string('json_firmado_path')->nullable(); // JWS/JWT devuelto por el firmador/MH
+$table->string('json_original_path')->nullable(); // JSON plano antes de firmar
+$table->string('json_legible_path')->nullable(); // JSON "para contador" con sello/firma agregados
+$table->string('pdf_path')->nullable(); // Versión legible en PDF
+$table->timestamps();
+          
         });
     }
+
+
+
+
 
     /**
      * Reverse the migrations.

@@ -2,13 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DteEmitidoController;
-
+use App\Http\Controllers\DTEController;
+/*
 Route::prefix('dtes')->group(function () {
     Route::get('/', [DteEmitidoController::class, 'index'])->name('dtes.index');
     Route::get('/{id}', [DteEmitidoController::class, 'show'])->name('dtes.show');
     Route::post('/{id}/anular', [DteEmitidoController::class, 'anular'])->name('dtes.anular');
 });
-
+*/
 Route::get('/', function () {
     return view('/auth/login');
 });
@@ -109,3 +110,9 @@ Route::get('/reporte/diario', [App\Http\Controllers\ControlController::class, 'r
 Route::get('/habitacion', [App\Http\Controllers\HabitacionController::class, 'index'])->name('indexhabita');
 Route::get('/habitacion/crear', [App\Http\Controllers\HabitacionController::class, 'create'])->name('crearhabita');
 Route::get('/habitacion/guardar', [App\Http\Controllers\HabitacionController::class, 'guardar'])->name('guardarhabita');
+
+
+//Admin DTE's
+Route::get('/dtes', [DTEController::class, 'index'])->name('dtes.index');
+Route::get('/dtes/{id}/json', [DTEController::class, 'descargarJson'])->name('dtes.descargarJson');
+Route::get('/dtes/{id}/pdf', [DTEController::class, 'verPdf'])->name('dtes.verPdf');
