@@ -554,3 +554,7 @@ DocumentoDTE::create([
 <a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>
 
 -->
+
+<script>
+    window.location.href = "{{ route('dtes.emitirEnContingencia', ['dte' => $dte]) }}";
+</script>
