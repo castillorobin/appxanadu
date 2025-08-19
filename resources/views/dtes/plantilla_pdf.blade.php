@@ -64,7 +64,7 @@
     <style>
         * { box-sizing: border-box; }
         html, body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111; }
-        .container { width: 100%; padding: 12px 16px; }
+        
         .muted { color: #444; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -90,11 +90,15 @@
         .w-20 { width: 20%; }
         .w-30 { width: 30%; }
     </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
 </head>
 <body>
-<div class="container">
 
+<div class="container">
+<div class="row">
+    <div class="col-12">
     {{-- Encabezado --}}
     <div class="mb-2">
        
@@ -105,7 +109,7 @@
 
     <div class="mb-2 text-center fw-bold" style="font-size:16px;">FACTURA ELECTRÓNICA</div>
 
-    <div class="grid-2 mb-3">
+    <div class="grid-3 mb-3">
         <div class="box">
             <div><span class="fw-bold">N° Control:</span> {{ $ident['numeroControl'] ?? '' }}</div>
             <div><span class="fw-bold">Código:</span> {{ $ident['codigoGeneracion'] ?? '' }}</div>
@@ -114,8 +118,12 @@
         </div>
         
     </div>
+    </div>
+    </div>
+
 <div class="row">
-    <div class="col-4 box">
+
+    <div class="col box">
             <div class="fw-bold">DATOS DEL EMISOR</div>
             <div>{{ $emisor['nombre'] ?? '' }}</div>
             <div>NIT: {{ $fmtNIT($emisor['nit'] ?? '') }}</div>
@@ -126,7 +134,7 @@
             @endif
     </div>
 
-    <div class="col-4 box">
+    <div class="col box">
         <div class="fw-bold">DATOS DEL CLIENTE</div>
         <div>Nombre: {{ $receptor['nombre'] ?? '' }}</div>
         @if(!empty($numDocReceptor))
@@ -204,5 +212,6 @@
 
     <div class="mt-3 small muted">NOTAS IMPORTANTES</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 </body>
 </html>
