@@ -8,11 +8,12 @@ use App\Models\DocumentoDTE;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 
 class DTEController extends Controller {
 public function index(Request $request) {
-$query = DocumentoDTE::query();
+$query = DocumentoDTE::query()->whereDate('created_at', Carbon::today());
 
 
 if ($request->filled('desde') && $request->filled('hasta')) {

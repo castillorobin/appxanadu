@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DteEmitidoController;
 use App\Http\Controllers\DTEController;
+use App\Http\Controllers\ContingenciaController;
 /*
 Route::prefix('dtes')->group(function () {
     Route::get('/', [DteEmitidoController::class, 'index'])->name('dtes.index');
@@ -10,6 +11,16 @@ Route::prefix('dtes')->group(function () {
     Route::post('/{id}/anular', [DteEmitidoController::class, 'anular'])->name('dtes.anular');
 });
 */
+
+Route::prefix('contingencia')->name('contingencia.')->group(function () {
+Route::get('/', [ContingenciaController::class, 'index'])->name('index');
+Route::post('/emitir', [ContingenciaController::class, 'emitirEnContingencia'])->name('emitir');
+Route::get('/{id}/pdf', [ContingenciaController::class, 'verPdfContingencia'])->name('pdf');
+Route::post('/{id}/regularizar', [ContingenciaController::class, 'regularizar'])->name('regularizar');
+Route::post('/regularizar/pendientes', [ContingenciaController::class, 'regularizarPendientes'])->name('regularizarPendientes');
+});
+
+
 Route::get('/', function () {
     return view('/auth/login');
 });
