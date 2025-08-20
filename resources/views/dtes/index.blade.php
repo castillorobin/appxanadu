@@ -55,7 +55,9 @@
 </table>
 
 
-{{ $dtes->links() }}
+<div class="d-flex justify-content-end">
+    {{ $dtes->onEachSide(1)->links('pagination::bootstrap-4') }}
+</div>
 
 
 </div>
