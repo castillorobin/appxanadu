@@ -173,14 +173,17 @@
                         
     <hr>
   <div class="text-center">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Commons_QR_code.png" alt="" style="width: 200px;">
+    <img src="https://admin.factura.gob.sv/consultaPublica?ambiente={{ $ambiente }}&codGen={{ $codigo }}&fechaEmi={{ $fechaemi }}" alt="" style="width: 200px;">
+    
 </div>            
                     </div>
                 </div>
             </div>
        
     </section>
-    
+
+
+
     <script>
         
         window.print();

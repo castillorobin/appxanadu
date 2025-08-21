@@ -56,13 +56,15 @@ class FacturaController extends Controller
         return view('facturacion.ver', compact('cotiactual', 'detalles'));
     }
 
-    public function verpdf($id)
+    public function verpdf($id, $ambiente, $codigo, $fechaemi)
     {
+       
+//dd($codigo);
         //$proveedores = Proveedor::all();
         $detalles = Cotidetalle::where('coticode', $id)->get();
         $cotiactual = Factura::where('codigo', $id)->get();
 
-        return view('facturacion.facturacoti', compact('cotiactual', 'detalles'));
+        return view('facturacion.facturacoti', compact('cotiactual', 'detalles', "codigo", 'ambiente', 'fechaemi'));
 /*
         $pdf = Dompdf::loadHtml('facturacion.facturacoti', ['detalles'=>$detalles, 'cotiactual'=>$cotiactual]);
         $pdf->render();

@@ -76,7 +76,7 @@ Route::get('/facturacion/crear', [App\Http\Controllers\FacturaController::class,
 Route::get('/facturacion/detalleconcabe', [App\Http\Controllers\FacturaController::class, 'detalleconcabe'])->name('detalleconcabe');
 Route::get('/facturacion/detalleadd', [App\Http\Controllers\FacturaController::class, 'detalleadd'])->name('detalleadd');
 Route::get('/facturacion/ver/{id}', [App\Http\Controllers\FacturaController::class, 'ver'])->name('verco');
-Route::get('/facturacion/verpdf/{id}', [App\Http\Controllers\FacturaController::class, 'verpdf'])->name('verpdf');
+Route::get('/facturacion/verpdf/{id}/{ambiente}/{codigo}/{fechaemi}', [App\Http\Controllers\FacturaController::class, 'verpdf'])->name('verpdf');
 
 
 Route::get('/facturacion/borrardet/{id}', [App\Http\Controllers\FacturaController::class, 'borrardet'])->name('borrardet');

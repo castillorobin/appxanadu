@@ -120,7 +120,7 @@ function sacartotal($detalles){
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 1;
-    public $ambiente = "01";
+    public $ambiente = "00";
     public $tipoDte = "01"; 
     public $numeroControl;
     public $codigoGeneracion;
@@ -401,10 +401,10 @@ function enviarDTEAPI($dte) {
     $datos = [
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
-        'Ambiente' => '01',
+        'Ambiente' => '00',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "25Xanadu20.",
+        'PasswordPrivado' => "20Xanadu25.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
@@ -529,6 +529,12 @@ DocumentoDTE::create([
 //'pdf_path' => $rutaPdf,
 ]);
 
+echo '
+<p></p>
+<a href="/facturacion/verpdf/' . $detalles[0]->coticode . '/' . $dte->identificacion->ambiente . '/' . $codigoGeneracion . '/' . $dte->identificacion->fecEmi . ' " class="btn btn-primary">Imprimir</a>
+&nbsp; &nbsp; &nbsp;
+<a href="/facturacion" class="btn btn-danger">Regresar </a>
+';
 //Termina Almacenar datos del DTE
 
 } catch (Exception $e) {
@@ -536,7 +542,3 @@ DocumentoDTE::create([
 }
 
 ?>
-
-<p></p>
-<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>
-
