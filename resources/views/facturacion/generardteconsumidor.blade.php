@@ -120,7 +120,7 @@ function sacartotal($detalles){
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 1;
-    public $ambiente = "00";
+    public $ambiente = "01";
     public $tipoDte = "01"; 
     public $numeroControl;
     public $codigoGeneracion;
@@ -401,10 +401,10 @@ function enviarDTEAPI($dte) {
     $datos = [
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
-        'Ambiente' => '00',
+        'Ambiente' => '01',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "20Xanadu25.",
+        'PasswordPrivado' => "25Xanadu20.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
