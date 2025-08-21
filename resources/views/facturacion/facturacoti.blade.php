@@ -172,10 +172,13 @@
         </table>
                         
     <hr>
-  <div class="text-center">
-    <img src="https://admin.factura.gob.sv/consultaPublica?ambiente={{ $ambiente }}&codGen={{ $codigo }}&fechaEmi={{ $fechaemi }}" alt="" style="width: 200px;">
-    
-</div>            
+    @php
+    $data = "https://admin.factura.gob.sv/consultaPublica?ambiente=$ambiente&codGen=$codigo&fechaEmi=$fechaemi";
+@endphp
+
+<div class="text-center">
+    {!! QrCode::size(220)->generate($data) !!}
+</div>           
                     </div>
                 </div>
             </div>
