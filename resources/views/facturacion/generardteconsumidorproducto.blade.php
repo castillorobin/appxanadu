@@ -518,6 +518,12 @@ DocumentoDTE::create([
 //'pdf_path' => $rutaPdf,
 ]);
 
+echo '
+<p></p>
+<a href="/facturacion/verpdf/' . $detalles[0]->coticode . '/' . $dte->identificacion->ambiente . '/' . $codigoGeneracion . '/' . $dte->identificacion->fecEmi . ' " class="btn btn-primary">Imprimir</a>
+&nbsp; &nbsp; &nbsp;
+<a href="/facturacion" class="btn btn-danger">Regresar </a>
+';
 //Termina Almacenar datos del DTE
 
 } catch (Exception $e) {
@@ -526,5 +532,3 @@ DocumentoDTE::create([
 ///header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
-<p></p>
-<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>
