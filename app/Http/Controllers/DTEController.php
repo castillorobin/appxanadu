@@ -13,18 +13,27 @@ use Carbon\Carbon;
 
 class DTEController extends Controller {
 public function index(Request $request) {
-$query = DocumentoDTE::query()->whereDate('created_at', Carbon::today());
+$query = DocumentoDTE::query();
+
+    // Filtro por rango de fechas si se envía
+    if ($request->filled('desde') && $request->filled('hasta')) {
+        $query->whereBetween('created_at', [
+            Carbon::parse($request->desde)->startOfDay(),
+            Carbon::parse($request->hasta)->endOfDay()
+        ]);
+    } else {
+        // Por defecto mostrar solo los de HOY (en la zona horaria configurada)
+        $query->whereBetween('created_at', [
+            Carbon::today()->startOfDay(),
+            Carbon::today()->endOfDay()
+        ]);
+    }
+
+    $dtes = $query->orderByDesc('created_at')->paginate(15);
+
+    return view('dtes.index', compact('dtes'));
 
 
-if ($request->filled('desde') && $request->filled('hasta')) {
-$query->whereBetween('created_at', [$request->desde, $request->hasta]);
-}
-
-
-$dtes = $query->orderByDesc('created_at')->paginate(15);
-
-
-return view('dtes.index', compact('dtes'));
 }
 
 
@@ -33,6 +42,7 @@ $dte = DocumentoDTE::findOrFail($id);
 // Preferir entregar el "legible" si existe, de lo contrario el firmado
 $path = $dte->json_legible_path ?: $dte->json_firmado_path;
 return Storage::download($path);
+
 }
 
 
