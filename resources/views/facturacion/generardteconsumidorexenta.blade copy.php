@@ -397,7 +397,6 @@ function enviarDTEAPI($dte) {
         'Ambiente' => '01',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-       // 'PasswordPrivado' => "20Xanadu25.",
         'PasswordPrivado' => "25Xanadu20.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
@@ -458,79 +457,21 @@ try {
 
 
 
-
- // Almacenar datos del DTE
-$dteArray = json_decode(json_encode($dte), true);
- // Datos de la respuesta MH
-    $codigoGeneracion = $respuestaAPI->codigoGeneracion ?? ($dteArray['identificacion']['codigoGeneracion'] ?? (string) Str::uuid());
-    $numControl       = $respuestaAPI->numControl       ?? ($dteArray['identificacion']['numeroControl'] ?? null);
-    $selloRecibido    = $respuestaAPI->selloRecibido    ?? null;
-    $jwsFirmado       = $respuestaAPI->dteFirmado       ?? null;
-
-    // 1) Guardar JSON ORIGINAL
-    $rutaOriginal = "dtes_json/original_{$codigoGeneracion}.json";
-    Storage::put($rutaOriginal, json_encode($dteArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     
-    // 2) Construir JSON LEGIBLE PARA CONTADOR
-    $legible = $dteArray;
-    $legible['identificacion']['codigoGeneracion'] = $codigoGeneracion;
-    if ($numControl) {
-        $legible['identificacion']['numeroControl'] = $numControl;
-    }
 
-    //  Ordenar: primero firmaElectronica, luego selloRecibido
-    if ($jwsFirmado) {
-        $legible['firmaElectronica'] = $jwsFirmado;
-    }
-    if ($selloRecibido) {
-        unset($legible['selloRecibido']); // por si acaso existe
-        // Forzar sello al final
-        $legible = array_merge($legible, ['selloRecibido' => $selloRecibido]);
-    }
-
-    $rutaLegible = "dtes_json/legible_{$codigoGeneracion}.json";
-   // Storage::put($rutaLegible, json_encode($legible, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    Storage::put($rutaLegible, json_encode($legible, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-
-    // 3) Guardar JWS firmado crudo
-    $rutaFirmado = null;
-    if ($jwsFirmado) {
-        $rutaFirmado = "dtes_json/firmado_{$codigoGeneracion}.json";
-        Storage::put($rutaFirmado, $jwsFirmado);
-    }
-
-
-/*
-// 4) Generar PDF versión legible para entrega
-$pdf = Pdf::loadView('dtes.plantilla_pdf', ['dte' => $legible]); // $legible = tu JSON legible
-$rutaPdf = "dtes_pdfs/dte_{$codigoGeneracion}.pdf";
-Storage::put($rutaPdf, $pdf->output());
-*/
-
-// 5) Persistir en BD
+    // Almacenar datos del DTE
 DocumentoDTE::create([
-'sello_recibido' => $selloRecibido,
-'codigo_generacion' => $codigoGeneracion,
-'numero_control' => $numControl,
-'factura' => $detalles[0]->coticode ?? null,
-'fecha_generacion' => now(),
-'tipo_dte' => $dteArray['identificacion']['tipoDte'] ?? null,
-'json_original_path' => $rutaOriginal,
-'json_legible_path' => $rutaLegible,
-'json_firmado_path' => $rutaFirmado,
-//'pdf_path' => $rutaPdf,
+    'sello_recibido' => $respuestaAPI->selloRecibido ?? null,
+    'codigo_generacion' => $dte->identificacion->codigoGeneracion ?? null,
+    'numero_control' => $dte->identificacion->numeroControl ?? null,
+    'factura' => $detalles[0]->coticode ?? null,
 ]);
-
-echo '
-<p></p>
-<a href="/facturacion/verpdf/' . $detalles[0]->coticode . '/' . $dte->identificacion->ambiente . '/' . $codigoGeneracion . '/' . $dte->identificacion->fecEmi . ' " class="btn btn-primary">Imprimir</a>
-&nbsp; &nbsp; &nbsp;
-<a href="/facturacion" class="btn btn-danger">Regresar </a>
-';
-//Termina Almacenar datos del DTE
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
+///header("Refresh: 3; url=https://xanadusistema.com/facturacion");
 
 ?>
+<p></p>
+<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>
