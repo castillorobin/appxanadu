@@ -29,7 +29,7 @@ $query = DocumentoDTE::query();
         ]);
     }
 
-    $dtes = $query->orderByDesc('created_at')->paginate(15);
+    $dtes = $query->orderByDesc('created_at')->paginate(15)->withQueryString();;
 
     return view('dtes.index', compact('dtes'));
 
