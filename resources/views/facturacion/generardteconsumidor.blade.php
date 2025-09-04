@@ -404,6 +404,7 @@ function enviarDTEAPI($dte) {
         'Ambiente' => '01',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
+        //'PasswordPrivado' => "20Xanadu25.",
         'PasswordPrivado' => "25Xanadu20.",
         'TipoDte' => '01',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
