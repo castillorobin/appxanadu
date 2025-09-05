@@ -42,6 +42,7 @@ public function descargarJson($id) {
 $dte = DocumentoDTE::findOrFail($id);
 // Preferir entregar el "legible" si existe, de lo contrario el firmado
 $path = $dte->json_legible_path ?: $dte->json_firmado_path;
+//dd($path);
 return Storage::download($path);
 
 }
