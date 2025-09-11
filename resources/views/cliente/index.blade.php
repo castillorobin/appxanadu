@@ -17,7 +17,7 @@
             <div class="card card-default">
                 <div class="card-header">
                     <span class="card-title">Listado de clientes</span>
-                    <a href="/cliente/crear">
+                    <a href="/clientes/create">
                     <button type="button" class="btn btn-success" style="float: right;">Agregar Cliente</button>
                 </a>
                 </div>
@@ -37,30 +37,29 @@
                         </thead>
                         <tbody>
                             
-                            @for ($i=0; $i< count($clientes); $i++)
+                            @foreach ($clientes as $cliente)
                             <tr >
-                            <td>{{ $clientes[$i]->id }}</td>
+                            <td>{{ $cliente->id }}</td>
                            
-                            <td>{{ $clientes[$i]->Nombre }}</td>
-                            <td>{{ $clientes[$i]->Telefono }}</td>
-                            <td>{{ $clientes[$i]->Direccion }}</td>
+                            <td>{{ $cliente->Nombre }}</td>
+                            <td>{{ $cliente->Telefono }}</td>
+                            <td>{{ $cliente->Direccion }}</td>
                         
                             <td class="opciones text-center" style="">
-                                <a href="/cliente/ver">
+                                <a href="/clientes/ver/{{ $cliente->id }}">
                                 <button type="button" class="btn btn-primary"><i class="fas fa-eye"></i></button>
                             </a>           
 
-                            <a href="/cliente/editar/{{ $clientes[$i]->id }}">
-                                <button type="button" class="btn btn-warning"><i class="fas fa-edit"></i></button>
-                            </a>
-
-                                <a href="/cliente/borrar/{{ $clientes[$i]->id }}">
-                                <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
-                            </a>
-                        
+                           
+                        <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button onclick="return confirm('¿Estás seguro?')" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
                             </td>
                             </tr>
-                            @endfor
+                            @endforeach
                         </tbody>
 
                         </table>

@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Proveedor')
+@section('title', 'Editar cliente')
 
 @section('content_header')
-    <h1>Agregar de Cliente</h1>
+    <h1>Editar Cliente</h1>
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 @stop
@@ -18,70 +18,66 @@
 
             <div class="card card-default">
                 <div class="card-header">
-                    <span class="card-title">Ingresar Datos</span>
+                    <span class="card-title">Editar Datos</span>
                     
                 </div>
                 <div class="card-body bg-white">
 
                     
-                    
-    <form action="{{ route('clientes.store') }}" method="POST">
+ <form action="{{ route('clientes.update', $cliente) }}" method="POST">
         @csrf
+        @method('PUT')
 
                     <div class="mb-3 col-8">
                         <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingrese el nombre">
+                        <input type="text" class="form-control" id="nombre" name="Nombre" value="{{ $cliente->Nombre }}"  >
                     </div>
 
                     
 
                     <div class="mb-3 col-8">
                         <label class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingrese la dirección">
+                        <input type="text" class="form-control" id="direccion" name="Direccion" value="{{ $cliente->Direccion }}" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese el # telefono">
+                        <input type="text" class="form-control" id="telefono" name="Telefono" value="{{ $cliente->Telefono }}" >
                     </div>
 
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="correo" name="correo" placeholder="nombre@dominio.com">
+                        <input type="email" class="form-control" id="correo" name="Correo" value="{{ $cliente->Correo }}" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">DUI</label>
-                        <input type="text" class="form-control" id="dui" name="dui" placeholder="Ingrese el DUI">
+                        <input type="text" class="form-control" id="dui" name="DUI" value="{{ $cliente->DUI }}" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">NRC</label>
-                        <input type="text" class="form-control" id="nrc" name="nrc" placeholder="Ingrese el NRC">
+                        <input type="text" class="form-control" id="nrc" name="nrc" value="{{ $cliente->nrc }}" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Giro</label>
-                        <input type="text" class="form-control" id="giro" name="giro" placeholder="Ingrese el Giro">
+                        <input type="text" class="form-control" id="giro" name="giro" value="{{ $cliente->giro }}" >
                     </div>
 
                     <div class="mb-3 col-4">
                         <label class="form-label">Departamento</label>
-                        <input type="text" class="form-control" id="departamento" name="departamento" placeholder="Ingrese el Departamento">
+                        <input type="text" class="form-control" id="departamento" name="departamento" value="{{ $cliente->departamento }}" >
                     </div>
 
-                    <div class="mb-3 col-4">
-                        <label class="form-label">Placa</label>
-                        <input type="text" class="form-control" id="placa" name="placa" value="P">
-                    </div>
                     
 
 
 <hr>
 
 
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary">Editar</button>
                     &nbsp; &nbsp; &nbsp;
                     <a href="/clientes">
                         <button type="button" class="btn btn-danger">Cancelar</button> </a>

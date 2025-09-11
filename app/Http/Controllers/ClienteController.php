@@ -15,6 +15,11 @@ class ClienteController extends Controller
         $clientes = Cliente::all();
         return view('cliente.index', compact('clientes'));
     }
+    public function indexver($id)
+    {
+        $cliente = Cliente::find($id);
+        return view('cliente.indexver', compact('cliente'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -29,7 +34,7 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        $cliente = new Cliente();
+        $cliente = new Cliente(); 
  
         $cliente->Nombre = $request->get('nombre');
         $cliente->DUI = $request->get('dui');
@@ -53,25 +58,31 @@ class ClienteController extends Controller
      */
     public function show(Cliente $cliente)
     {
-        //
+        
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cliente $cliente)
+     public function edit(Cliente $cliente)
     {
-        //
+        return view('cliente.edit', compact('cliente'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Cliente $cliente)
     {
-        //
-    }
+        /*
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'tipo_documento' => 'nullable|string',
+            'numero_documento' => 'nullable|string',
+        ]);
+*/
+ $cliente->update($request->only(['Nombre', 'Telefono', 'Direccion', 'Correo','DUI', 'placa,', 'nrc', 'giro', 'departamento']));
 
+       // $cliente->update($request->all());
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
+    }
     /**
      * Remove the specified resource from storage.
      */

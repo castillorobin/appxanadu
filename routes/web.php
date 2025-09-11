@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DteEmitidoController;
 use App\Http\Controllers\DTEController;
 use App\Http\Controllers\ContingenciaController;
+use App\Http\Controllers\ClienteController;
 /*
 Route::prefix('dtes')->group(function () {
     Route::get('/', [DteEmitidoController::class, 'index'])->name('dtes.index');
@@ -31,12 +32,22 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 //Clientes
-Route::get('/clientes', [App\Http\Controllers\ClienteController::class, 'index'])->name('indexc');
+/*
+//Route::get('/clientes', [App\Http\Controllers\ClienteController::class, 'index'])->name('indexc');
 Route::get('/cliente/crear', [App\Http\Controllers\ClienteController::class, 'create'])->name('crearc');
 Route::get('/cliente/guardar', [App\Http\Controllers\ClienteController::class, 'store'])->name('guardarc');
 Route::get('/cliente/borrar/{id}', [App\Http\Controllers\ClienteController::class, 'destroy'])->name('borrarc');
 Route::get('/cliente/editar/{id}', [App\Http\Controllers\ClienteController::class, 'edit'])->name('editarc');
 Route::get('/cliente/update/{id}', [App\Http\Controllers\ClienteController::class, 'update'])->name('updatec');
+*/
+
+Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
+Route::get('/clientes/create', [ClienteController::class, 'create'])->name('clientes.create');
+Route::post('/clientes', [ClienteController::class, 'store'])->name('clientes.store');
+Route::get('/clientes/{cliente}/edit', [ClienteController::class, 'edit'])->name('clientes.edit');
+Route::put('/clientes/{cliente}', [ClienteController::class, 'update'])->name('clientes.update');
+Route::delete('/clientes/{cliente}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
+Route::get('/clientes/ver/{id}', [ClienteController::class, 'indexver'])->name('clientes.indexver');
 
 
 //Productos
