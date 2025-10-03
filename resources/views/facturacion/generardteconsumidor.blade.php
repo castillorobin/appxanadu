@@ -285,7 +285,7 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
     // Receptor
     $dte->receptor = new Receptor();
-    $dte->receptor->tipoDocumento = "13";
+    $dte->receptor->tipoDocumento = "37";
     $dte->receptor->numDocumento = $cliente[0]->DUI;
     $dte->receptor->nombre = $cliente[0]->Nombre;
     $dte->receptor->direccion = new Direccion();
