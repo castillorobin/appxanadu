@@ -59,7 +59,7 @@ class FacturaController extends Controller
     public function verpdf($id, $ambiente, $codigo, $fechaemi)
     {
        
-//dd($codigo);
+//dd($codigo); 
         //$proveedores = Proveedor::all();
         $detalles = Cotidetalle::where('coticode', $id)->get();
         $cotiactual = Factura::where('codigo', $id)->get();

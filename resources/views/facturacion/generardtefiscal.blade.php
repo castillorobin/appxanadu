@@ -388,7 +388,7 @@ $dte->resumen->numPagoElectronico = null;
 }
 
 // Función para enviar DTE a la API
-function enviarDTEAPI($dte) {
+function enviarDTEAPI($dte, $factura) {
     $datos = [
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
@@ -396,12 +396,13 @@ function enviarDTEAPI($dte) {
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
         'PasswordPrivado' => "25Xanadu20.",
+        //'PasswordPrivado' => "20Xanadu25.",
         'TipoDte' => '03',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
         'VersionDte' => 3,
         //'CorreoCliente' => "clientesfrecuentes01@gmail.com"
-        'CorreoCliente' => "poncemarito2019@gmail.com"
+        'CorreoCliente' => $factura[0]->correo
     ];
 
    // echo "<pre>JSON enviado a la API:<br>" . json_encode($datos, JSON_PRETTY_PRINT) . "</pre>";
@@ -439,17 +440,18 @@ try {
     $dte = crearDTE($fecha_actual, $hora_actual, $detalles, $factura);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
-    $respuestaAPI = enviarDTEAPI($dte);
+    $respuestaAPI = enviarDTEAPI($dte, $factura);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
-    if (isset($respuestaAPI->SelloRecepcion)) {
-        echo "Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
-    } else if (isset($dte->identificacion->codigoGeneracion)) {
-        echo "Sello de recepción: " . $dte->identificacion->codigoGeneracion . "<br>";
-    }
-
-    echo "<br> Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
+   if (isset($respuestaAPI->selloRecibido)) {
+    echo "Sello de recepción: " . $respuestaAPI->selloRecibido . "<br>";
+} elseif (isset($respuestaAPI->SelloRecepcion)) {
+    echo "Sello de recepción (SelloRecepcion): " . $respuestaAPI->SelloRecepcion . "<br>";
+} elseif (isset($dte->identificacion->codigoGeneracion)) {
+    echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
+}
     echo "Proceso completado exitosamente.<br>";
+
   // Almacenar datos del DTE
 $dteArray = json_decode(json_encode($dte), true);
  // Datos de la respuesta MH

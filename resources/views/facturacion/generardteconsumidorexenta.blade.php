@@ -289,8 +289,8 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
 
     // Configurar receptor
     $dte->receptor = new Receptor();
-    $dte->receptor->tipoDocumento = "37";
-    $dte->receptor->numDocumento = "012345678";
+    $dte->receptor->tipoDocumento = "13";
+    $dte->receptor->numDocumento = $cliente[0]->DUI;
     $dte->receptor->nrc = null;
     $dte->receptor->nombre = $cliente[0]->Nombre;
     $dte->receptor->codActividad = "41001";
@@ -390,7 +390,7 @@ $dte->resumen->numPagoElectronico = "";
 
 // Función para enviar DTE a la API
 
-function enviarDTEAPI($dte) {
+function enviarDTEAPI($dte, $cliente) {
     $datos = [ 
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
@@ -404,7 +404,7 @@ function enviarDTEAPI($dte) {
         'NumControl' => $dte->identificacion->numeroControl,
         'VersionDte' => 1,
         //'CorreoCliente' => "clientesfrecuentes01@gmail.com"
-        'CorreoCliente' => "poncemarito2019@gmail.com"
+        'CorreoCliente' => $cliente[0]->Correo
     ];
 
     //echo "<pre>JSON generado:<br>" . json_encode($dte, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
@@ -435,7 +435,7 @@ function enviarDTEAPI($dte) {
 
     return json_decode($response);
 }
-
+ 
 
 // Ejemplo de uso
 // Iniciar proceso automáticamente al abrir el archivo desde el navegador
@@ -444,7 +444,7 @@ try {
     $dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
-    $respuestaAPI = enviarDTEAPI($dte);
+    $respuestaAPI = enviarDTEAPI($dte, $cliente);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
     if (isset($respuestaAPI->selloRecibido)) {

@@ -78,11 +78,14 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Cliente</span>
-                        <select class="form-control js-example-basic-single produ" name="cliente" id="cliente">
+                        <select class="form-control js-example-basic-single produ edit" name="cliente" id="cliente">
+                            <option value="">Seleccionar cliente</option>
                             @foreach($clientes as $cliente)
                             <option value="{{$cliente->Nombre}}">{{$cliente->Nombre}}</option>
                             
-                            
+                             <span hidden id="dui{{ $cliente->Nombre}}"> {{ $cliente->DUI }}</span>
+                            <span hidden id="dir{{ $cliente->Nombre}}"> {{ $cliente->Direccion }}</span>
+                            <span hidden id="cor{{ $cliente->Nombre}}"> {{ $cliente->Correo }}</span>
                             @endforeach 
                             
                         </select>
@@ -116,7 +119,18 @@
                     
         </div>
 
+ <div class="row my-2" >
 
+                    <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Correo</span>
+                        <input type="text" class="form-control" id="correo" name="correo" placeholder="">
+                    </div>
+                    </div>
+
+
+                    
+        </div>
         
 
 
@@ -219,7 +233,24 @@
 });
 </script>
 
+<script>
+   
+       $(document).ready(function(){
+           $(document).on('click', '.edit', function(){
+              var cod=$(this).val();
+                 var duis=$('#dui'+cod).text();
+                 var dir=$('#dir'+cod).text();
+                 var correo=$('#cor'+cod).text();
 
+                 document.getElementById("dui").value = duis;
+                 document.getElementById("direccion").value = dir;
+                 document.getElementById("correo").value = correo;
+
+
+                  });
+       });
+        
+</script>
 
 
 
