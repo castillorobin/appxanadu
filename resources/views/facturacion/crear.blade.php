@@ -81,12 +81,11 @@
                         <select class="form-control js-example-basic-single produ edit" name="cliente" id="cliente" >
                             <option value="">Seleccionar cliente</option>
                             @foreach($clientes as $cliente)
-                            <option value="{{$cliente->Nombre}}">{{$cliente->Nombre}}</option>
-                
-                           
-                            <span hidden id="dui{{ $cliente->Nombre}}"> {{ $cliente->DUI }}</span>
-                            <span hidden id="dir{{ $cliente->Nombre}}"> {{ $cliente->Direccion }}</span>
-                            <span hidden id="cor{{ $cliente->Nombre}}"> {{ $cliente->Correo }}</span>
+                            <option value="{{$cliente->id}}">{{$cliente->Nombre}}</option>
+
+                            <span hidden id="dui{{ $cliente->id}}"> {{ $cliente->DUI }}</span>
+                            <span hidden id="dir{{ $cliente->id}}"> {{ $cliente->Direccion }}</span>
+                            <span hidden id="cor{{ $cliente->id}}"> {{ $cliente->Correo }}</span>
                             @endforeach
 
                         </select>
