@@ -10,25 +10,33 @@
 
 @section('content')
 <div class="container">
-<h3>Documentos Tributarios Electrónicos (DTE)</h3>
-<form method="GET" class="mb-3">
-<div class="row">
-    <div class="col-md-3">
-    <input type="date" name="desde" class="form-control" value="{{ request('desde') }}" placeholder="Desde">
-    </div>
-    <div class="col-md-3">
-    <input type="date" name="hasta" class="form-control" value="{{ request('hasta') }}" placeholder="Hasta">
-    </div>
-    <div class="col-md-3">
-    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <h3>Documentos Tributarios Electrónicos (DTE)</h3>
     
-    </div>
-</form>
-<a class="btn btn-success btn-sm"
-   href="{{ route('dtes.descargarJsonLote', array_merge(request()->only(['desde','hasta']), ['tipo'=>request('tipo','legible')])) }}">
-  Descargar todos los JSON 
-</a>
-
+    <form method="GET" class="mb-3">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="date" name="desde" class="form-control" value="{{ request('desde') }}" placeholder="Desde">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="hasta" class="form-control" value="{{ request('hasta') }}" placeholder="Hasta">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-block w-100">Filtrar</button>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-success btn-sm w-100"
+                   href="{{ route('dtes.descargarJsonLote', array_merge(request()->only(['desde','hasta']), ['tipo'=>request('tipo','legible')])) }}">
+                  Descargar los JSON
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-danger btn-sm w-100"
+                   href="{{ route('dtes.descargarPdfLote', array_merge(request()->only(['desde','hasta']))) }}">
+                  Descargar los PDF
+                </a>
+            </div>
+        </div>
+    </form>
 </div>
 
 

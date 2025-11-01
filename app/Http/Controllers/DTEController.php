@@ -174,6 +174,59 @@ public function descargarJsonLote(Request $request)
     return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
 }
 
+public function descargarPdfLote(Request $request)
+{
+    $query = DocumentoDTE::query();
+
+    $desde = $request->input('desde');
+    $hasta = $request->input('hasta');
+    $tz    = 'America/El_Salvador';
+
+    if ($desde || $hasta) {
+        $desdeC = $desde ? Carbon::parse($desde, $tz)->startOfDay() : Carbon::minValue();
+        $hastaC = $hasta ? Carbon::parse($hasta, $tz)->endOfDay()   : Carbon::now($tz)->endOfDay();
+        $query->whereBetween('created_at', [$desdeC, $hastaC]);
+    } else {
+        $query->whereBetween('created_at', [Carbon::today($tz)->startOfDay(), Carbon::today($tz)->endOfDay()]);
+    }
+
+    // Crear ZIP temporal
+    Storage::makeDirectory('tmp');
+    $zipName = 'dtes_pdf_'.now($tz)->format('Ymd_His').'.zip';
+    $zipPath = storage_path('app/tmp/'.$zipName);
+
+    $zip = new \ZipArchive();
+    if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+        abort(500, 'No se pudo crear el ZIP.');
+    }
+
+    $faltantes = [];
+
+    $query->orderBy('id')->chunkById(500, function($chunk) use ($zip, &$faltantes) {
+        foreach ($chunk as $doc) {
+            $ruta = $doc->pdf_path;
+            $base = trim(($doc->codigo_generacion ?: 'SIN_CODIGO'));
+            $numc = trim(($doc->numero_control ?: 'SIN_NUMCTRL'));
+            $fname = sprintf('%s_%s.pdf', $base, $numc);
+
+            if ($ruta && Storage::exists($ruta)) {
+                $abs = Storage::path($ruta);
+                $zip->addFile($abs, $fname);
+            } else {
+                $faltantes[] = $fname.' => no encontrado ('.$ruta.')';
+            }
+        }
+    });
+
+    if (!empty($faltantes)) {
+        $zip->addFromString('faltantes.txt', implode(PHP_EOL, $faltantes));
+    }
+
+    $zip->close();
+
+    return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
+}
+
 
 
 
