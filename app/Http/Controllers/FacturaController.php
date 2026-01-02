@@ -12,6 +12,7 @@ use App\Models\Departamento;
 use App\Models\Fiscal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\ConteoDTE;
 
 class FacturaController extends Controller
 {
@@ -198,7 +199,8 @@ $ultimoid = Factura::latest('id')->first();
         $cliente = Cliente::where('id', $factura[0]->cliente)->get() ;
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardteconsumidor', compact('actual', 'detalles', 'cliente'));
+        $conteo = ConteoDTE::where('tipo', '01')->first();
+        return view('facturacion.generardteconsumidor', compact('actual', 'detalles', 'cliente', 'conteo'));
     }
 
      public function crearfiscal()
@@ -222,7 +224,8 @@ $ultimoid = Factura::latest('id')->first();
         
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardtefiscal', compact('actual', 'detalles', 'cliente'));
+        $conteo = ConteoDTE::where('tipo', '03')->first();
+        return view('facturacion.generardtefiscal', compact('actual', 'detalles', 'cliente', 'conteo'));
     }
 
      public function fiscalenca(Request $request)
@@ -317,7 +320,8 @@ $ultimoid = Factura::latest('id')->first();
        // $cliente = Cliente::where('nombre', $factura[0]->cliente)->get() ;
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardtefiscal', compact('factura', 'detalles'));
+        $conteo = ConteoDTE::where('tipo', '03')->first();
+        return view('facturacion.generardtefiscal', compact('factura', 'detalles', 'conteo'));
     }
 
      public function borrardetfiscal($id)
@@ -537,7 +541,8 @@ $ultimoid = Factura::latest('id')->first();
         $cliente = Cliente::where('id', $factura[0]->cliente)->get() ;
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardteconsumidorproducto', compact('actual', 'detalles', 'cliente'));
+        $conteo = ConteoDTE::where('tipo', '01')->first();
+        return view('facturacion.generardteconsumidorproducto', compact('actual', 'detalles', 'cliente', 'conteo'));
     }
 
     public function crearexenta()
@@ -629,7 +634,8 @@ $ultimoid = Factura::latest('id')->first();
         $cliente = Cliente::where('id', $factura[0]->cliente)->get() ;
 
         $actual = $factura[0]->codigo;
-        return view('facturacion.generardteconsumidorexenta', compact('actual', 'detalles', 'cliente'));
+        $conteo = ConteoDTE::where('tipo', '01')->first();
+        return view('facturacion.generardteconsumidorexenta', compact('actual', 'detalles', 'cliente', 'conteo'));
     }
 
     /**

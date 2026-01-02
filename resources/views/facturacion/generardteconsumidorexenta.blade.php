@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
 use App\Models\DocumentoDTE;
+ use App\Models\ConteoDTE;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -254,7 +255,10 @@ $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
 
 // Función para crear el DTE
-function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
+function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles, $conteo) {
+    $correlativo = str_pad($conteo->conteo + 1, 15, '0', STR_PAD_LEFT);
+    $numeroControl = "DTE-01-M001P001-" . $correlativo;
+   //
 
  $paradte = 30000000000 + $detalles[0]->id;
     
@@ -262,7 +266,7 @@ function crearDTE($fecha_actual, $cliente, $hora_actual, $detalles) {
     
     // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = "DTE-01-M001P001-0000". $paradte;  //DTE-01-F0000001-000080000000263
+    $dte->identificacion->numeroControl = $numeroControl;
     $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF1AF-7DF7-436F-B9AE-47CA46035F1B";
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
@@ -441,7 +445,7 @@ function enviarDTEAPI($dte, $cliente) {
 // Iniciar proceso automáticamente al abrir el archivo desde el navegador
 try {
     echo "Iniciando generación de DTE...<br>";
-    $dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles);
+    $dte = crearDTE($fecha_actual, $cliente, $hora_actual, $detalles, $conteo);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
     $respuestaAPI = enviarDTEAPI($dte, $cliente);
@@ -455,6 +459,19 @@ try {
     echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
 }
     echo "Proceso completado exitosamente.<br>";
+    
+   if (isset($respuestaAPI->selloRecibido) || isset($respuestaAPI->SelloRecepcion)) {
+    // Determinar el tipo de DTE para actualizar el conteo
+    $tipo = $dte->identificacion->tipoDte;
+
+    // Obtener el registro actual
+    $conteoActual = ConteoDTE::where('tipo', $tipo)->lockForUpdate()->first();
+
+    if ($conteoActual) {
+        $conteoActual->conteo += 1;
+        $conteoActual->save();
+    }
+}
 
 
 
