@@ -1,8 +1,6 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <?php
 
-use App\Models\DocumentoDTE;
-use App\Models\ConteoDTE;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -97,11 +95,48 @@ function numeroALetras($numero) {
     return $letras;
 }
 
+function sacarivas($detalles){
+    $iva = 0;
+    foreach ($detalles as $detalle) {
+        if ($detalle->descripcion = "Habitacion") {
+            $base = $detalle->total / 1.18;
+            $iva += round($base * 0.05, 2);
+        } else {
+            $base = $detalle->total / 1.13;
+            $iva += round($base * 0.13, 2);
+        }
+        
+        
+        
+    }
+    return $iva;
+}
+
+function sacartotal($detalles){
+    $totalBase = 0;
+    foreach ($detalles as $detalle) {
+        // Suponiendo que el total viene con IVA incluido
+        if ($detalle->descripcion == "Habitacion") {
+           $base = $detalle->total / 1.18;
+         
+        $totalBase += round($base, 2);
+       // $totalBase = round($totalBase * 0.05, 2);
+        }else {
+           $base = $detalle->total / 1.13;
+        $totalBase += round($base, 2);
+      //  $totalBase = round($totalBase * 0.13, 2);
+       dd("entro2");
+       
+        }
+        
+    }
+    return $totalBase;
+}
 
 // Clases para estructurar el DTE
 class Identificacion {
     public $version = 3;
-    public $ambiente = "01";
+    public $ambiente = "00";
     public $tipoDte = "03"; 
     public $numeroControl;
     public $codigoGeneracion;
@@ -233,16 +268,13 @@ $fecha_actual = date("Y-m-d");
 $hora_actual = date("h:i:s");
  
 // Función para crear el DTE
-function crearDTE($fecha_actual, $hora_actual, $items, $cliente, $conteo, $totalMontoNeto, $totalIva, $totalTurismo, $totalFactura, $actividad) {
-
-    $correlativo = str_pad($conteo->conteo + 1, 15, '0', STR_PAD_LEFT);
-    $numeroControl = "DTE-03-M001P001-" . $correlativo;
-
+function crearDTE($fecha_actual, $hora_actual, $detalles, $factura) {
+    $paradte = 90000000000 + $detalles[0]->id;
     $dte = new DocumentoTributarioElectronico();
     
     // Configurar identificación
     $dte->identificacion = new Identificacion();
-    $dte->identificacion->numeroControl = $numeroControl; //DTE-03-M001P001-000080000000263
+    $dte->identificacion->numeroControl = "DTE-03-M001P001-0000". $paradte; //DTE-01-F0000001-000080000000263
     $dte->identificacion->codigoGeneracion = getGUID(); //"7DEEF8AF-7DF6-476F-B9AE-47CA46035F1B";
     $dte->identificacion->fecEmi = $fecha_actual;
     $dte->identificacion->horEmi = $hora_actual;
@@ -269,79 +301,47 @@ function crearDTE($fecha_actual, $hora_actual, $items, $cliente, $conteo, $total
 
     // Configurar receptor
     $dte->receptor = new Receptor();
-    $dte->receptor->nit = $cliente['dui_nit']; 
-    $dte->receptor->nrc = $cliente['nrc'];
-    $dte->receptor->nombre = $cliente['nombre'];
-    $dte->receptor->nombreComercial = $cliente['comercial'];
-    $dte->receptor->codActividad = $cliente['codactividad'];
-    $dte->receptor->descActividad = $actividad;
-    //dd($cliente['codactividad']);
+    $dte->receptor->nit = $factura[0]->nit;
+    $dte->receptor->nrc = $factura[0]->nrc;
+    $dte->receptor->nombre = $factura[0]->nombre;
+    $dte->receptor->nombreComercial = $factura[0]->comercial;
+    $dte->receptor->codActividad = $factura[0]->codactividad;
+    $dte->receptor->descActividad = $factura[0]->actividad;
     $dte->receptor->direccion = new Direccion();
-    $dte->receptor->direccion->departamento = $cliente['departamento'];
-    $dte->receptor->direccion->municipio = $cliente['municipio'];
-    $dte->receptor->direccion->complemento = $cliente['direccion'];
-    $dte->receptor->telefono = $cliente['telefono'];
-    $dte->receptor->correo = $cliente['correo'];
+    $dte->receptor->direccion->departamento = $factura[0]->departamento;
+    $dte->receptor->direccion->municipio = $factura[0]->municipio;
+    $dte->receptor->direccion->complemento = $factura[0]->direccion;
+    $dte->receptor->telefono = $factura[0]->telefono;
+    $dte->receptor->correo = $factura[0]->correo;
 
 
    $cuerpo = [];
 $totalGravada = 0;
 $itemnum = 1;
 
-
-foreach ($items as $detalle) {
-    
-    if ($detalle['turismo'] > 0) {
-        # code...
-   //$cantidad = $detalle['cantidad'] ?? 1; // Asignar 1 si no se proporciona cantidad
-   $cantidad = (int) $detalle['cantidad'];
-  // dd($cantidad);
-   $item = new ItemDocumento();
+foreach ($detalles as $detalle) {
+    $item = new ItemDocumento();
     $item->numItem = $itemnum++;
     $item->tipoItem = 3;
     $item->numeroDocumento = null;
-    $item->cantidad = $cantidad;
-    //dd($item->cantidad);
-    
-    $precioUnitarioBase = $detalle['monto_neto'] / $item->cantidad;
-    $item->codigo = "27";
-    $item->codTributo = null;
-    $item->uniMedida = 59;
-    $item->descripcion = $detalle['detalle'];
-    $item->precioUni = round($precioUnitarioBase, 2);
-//dd(round($item->precioUni ));
-    $item->montoDescu = 0.00;
-    $item->ventaNoSuj = 0.00;
-    $item->ventaExenta = 0.00;
+    $item->cantidad = $detalle->cantidad;
 
-    $item->ventaGravada = round($detalle['monto_neto'], 2);
-   
-    $item->psv = $item->ventaGravada;
-    
-    $item->noGravado = 0.00;
+    $precioConIVA = round($detalle->total, 2);
 
-    $item->tributos = ["20", "59"];
-
-    $totalGravada += $item->ventaGravada;
-    $cuerpo[] = $item;
-     }else{
-$cantidad = (int) $detalle['cantidad'];
-      $item = new ItemDocumento();
-    $item->numItem = $itemnum++;
-    $item->tipoItem = 3;
-    $item->numeroDocumento = null;
-    $item->cantidad = $cantidad;
-
-    $precioConIVA = round($detalle['monto_neto'], 2);
-   
+   if ($detalle->descripcion = "Habitacion") {
+    $baseSinIVA = round($precioConIVA / 1.18, 2);
+   } else {
     $baseSinIVA = round($precioConIVA / 1.13, 2);
+   }
+   
+    
      
     $precioUnitarioBase = $baseSinIVA / $item->cantidad;
     
     $item->codigo = "27";
     $item->codTributo = null;
     $item->uniMedida = 59;
-    $item->descripcion = $detalle['detalle'];
+    $item->descripcion = $detalle->descripcion;
     $item->precioUni = round($precioUnitarioBase, 2);
 //dd(round($item->precioUni ));
     $item->montoDescu = 0.00;
@@ -353,19 +353,39 @@ $cantidad = (int) $detalle['cantidad'];
     $item->psv = $item->ventaGravada;
     
     $item->noGravado = 0.00;
-    $item->tributos = ["20"];
+
+    if ($detalle->descripcion = "Habitacion") {
+       $item->tributos = ["20", "59"];
+    } else {
+        $item->tributos = ["20"];
+    }
+    
+    
 
     $totalGravada += $item->ventaGravada;
     $cuerpo[] = $item;
-        
-     }
 }
 
 $dte->cuerpoDocumento = $cuerpo;
 
-//dd($dte->cuerpoDocumento);
+
+// Calcular totales base y IVA
+$totalBase = round(sacartotal($detalles), 2);
+//$totalIVA = round(sacarivas($detalles), 2);
+//$totalIVA = round($totalBase * 0.13, 2);
+$totalIVA =0;
+
+foreach ($detalles as $detalle) {
+if ($detalle->descripcion = "Habitacion") {
+       $totalIVA += round($totalBase * 0.05, 2);
+    } else {
+        $totalIVA += round($totalBase * 0.13, 2);
+    }
+
+
+}
     
-$totalPagar = $totalIva + $totalTurismo + $totalGravada;
+$totalPagar = $totalBase + $totalIVA;
 ///dd($totalPagar);
 $dte->resumen = new Resumen();
 $dte->resumen->totalNoSuj = 0.00;
@@ -383,7 +403,7 @@ $dte->resumen->ivaPerci1 = 0.00;
 $dte->resumen->reteRenta = 0.00;
 $dte->resumen->montoTotalOperacion = round($totalPagar, 2);
 
-//
+//dd($dte->resumen->montoTotalOperacion);
 
 $dte->resumen->totalNoGravado = 0.00;
 $dte->resumen->totalPagar = round($totalPagar, 2);
@@ -396,12 +416,12 @@ $dte->resumen->tributos = [
     [
         "codigo" => "20",
         "descripcion" => "Impuesto al Valor Agregado 13%",
-        "valor" => round($totalIva, 2)
+        "valor" => $totalIVA
 ],
  [
         "codigo" => "59",
         "descripcion" => "Turismo: por alojamiento (5%)",
-        "valor" => round($totalTurismo, 2)
+        "valor" => $totalIVA
     ]
 ];
 
@@ -416,8 +436,7 @@ $dte->resumen->numPagoElectronico = null;
     $dte->extension->observaciones = null;
     $dte->extension->placaVehiculo = null;
 
-   // dd($dte->cuerpoDocumento);
-   // dd($dte);
+    dd($dte);
     return $dte;
 
 } 
@@ -427,10 +446,10 @@ function enviarDTEAPI($dte) {
     $datos = [
         'Usuario' => "05090211591010",
         'Password' => "Santos25.",
-        'Ambiente' => '01',
+        'Ambiente' => '00',
         'DteJson' => json_encode($dte),
         'Nit' => "005207550",
-        'PasswordPrivado' => "25Xanadu20.",
+        'PasswordPrivado' => "20Xanadu25.",
         'TipoDte' => '03',
         'CodigoGeneracion' => $dte->identificacion->codigoGeneracion,
         'NumControl' => $dte->identificacion->numeroControl,
@@ -466,109 +485,28 @@ function enviarDTEAPI($dte) {
     return json_decode($response);
 }
 
+
+// Ejemplo de uso
 // Iniciar proceso automáticamente al abrir el archivo desde el navegador
 try {
     echo "Iniciando generación de DTE...<br>";
-    $dte = crearDTE($fecha_actual, $hora_actual, $items, $cliente, $conteo, $totalMontoNeto, $totalIva, $totalTurismo, $totalFactura, $actividad);
-     // Actualizar el conteo en la base de datos
+    $dte = crearDTE($fecha_actual, $hora_actual, $detalles, $factura);
     echo "DTE generado correctamente.<br>";
     echo "Iniciando transferencia a la API...<br>";
     $respuestaAPI = enviarDTEAPI($dte);
     echo "Respuesta recibida de la API.<br>";
     // Imprimir sello de recepción antes de enviar el correo
-   if (isset($respuestaAPI->selloRecibido)) {
-    echo "Sello de recepción: " . $respuestaAPI->selloRecibido . "<br>";
-} elseif (isset($respuestaAPI->SelloRecepcion)) {
-    echo "Sello de recepción (SelloRecepcion): " . $respuestaAPI->SelloRecepcion . "<br>";
-} elseif (isset($dte->identificacion->codigoGeneracion)) {
-    echo "Código de generación: " . $dte->identificacion->codigoGeneracion . "<br>";
-}
+    if (isset($respuestaAPI->SelloRecepcion)) {
+        echo "Sello de recepción: " . $respuestaAPI->SelloRecepcion . "<br>";
+    } else if (isset($dte->identificacion->codigoGeneracion)) {
+        echo "Sello de recepción: " . $dte->identificacion->codigoGeneracion . "<br>";
+    }
     echo "Proceso completado exitosamente.<br>";
-    if (isset($respuestaAPI->selloRecibido) || isset($respuestaAPI->SelloRecepcion)) {
-    // Determinar el tipo de DTE para actualizar el conteo
-    $tipo = $dte->identificacion->tipoDte;
-
-    // Obtener el registro actual
-    $conteoActual = ConteoDTE::where('tipo', $tipo)->lockForUpdate()->first();
-
-    if ($conteoActual) {
-        $conteoActual->conteo += 1;
-        $conteoActual->save();
-    }
-}
-
-  // Almacenar datos del DTE
-$dteArray = json_decode(json_encode($dte), true);
- // Datos de la respuesta MH
-    $codigoGeneracion = $respuestaAPI->codigoGeneracion ?? ($dteArray['identificacion']['codigoGeneracion'] ?? (string) Str::uuid());
-    $numControl       = $respuestaAPI->numControl       ?? ($dteArray['identificacion']['numeroControl'] ?? null);
-    $selloRecibido    = $respuestaAPI->selloRecibido    ?? null;
-    $jwsFirmado       = $respuestaAPI->dteFirmado       ?? null;
-
-    // 1) Guardar JSON ORIGINAL
-    $rutaOriginal = "dtes_json/original_{$codigoGeneracion}.json";
-    Storage::put($rutaOriginal, json_encode($dteArray, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    
-    // 2) Construir JSON LEGIBLE PARA CONTADOR
-    $legible = $dteArray;
-    $legible['identificacion']['codigoGeneracion'] = $codigoGeneracion;
-    if ($numControl) {
-        $legible['identificacion']['numeroControl'] = $numControl;
-    }
-
-    //  Ordenar: primero firmaElectronica, luego selloRecibido
-    if ($jwsFirmado) {
-        $legible['firmaElectronica'] = $jwsFirmado;
-    }
-    if ($selloRecibido) {
-        unset($legible['selloRecibido']); // por si acaso existe
-        // Forzar sello al final
-        $legible = array_merge($legible, ['selloRecibido' => $selloRecibido]);
-    }
-
-    $rutaLegible = "dtes_json/legible_{$codigoGeneracion}.json";
-   // Storage::put($rutaLegible, json_encode($legible, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    Storage::put($rutaLegible, json_encode($legible, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-
-    // 3) Guardar JWS firmado crudo
-    $rutaFirmado = null;
-    if ($jwsFirmado) {
-        $rutaFirmado = "dtes_json/firmado_{$codigoGeneracion}.json";
-        Storage::put($rutaFirmado, $jwsFirmado);
-    }
-
-
-/*
-// 4) Generar PDF versión legible para entrega
-$pdf = Pdf::loadView('dtes.plantilla_pdf', ['dte' => $legible]); // $legible = tu JSON legible
-$rutaPdf = "dtes_pdfs/dte_{$codigoGeneracion}.pdf";
-Storage::put($rutaPdf, $pdf->output());
-*/
-
-// 5) Persistir en BD
-DocumentoDTE::create([
-'sello_recibido' => $selloRecibido,
-'codigo_generacion' => $codigoGeneracion,
-'numero_control' => $numControl,
-'factura' => $detalles[0]->coticode ?? null,
-'fecha_generacion' => now(),
-'tipo_dte' => $dteArray['identificacion']['tipoDte'] ?? null,
-'json_original_path' => $rutaOriginal,
-'json_legible_path' => $rutaLegible,
-'json_firmado_path' => $rutaFirmado,
-//'pdf_path' => $rutaPdf,
-]);
-
-echo '
-<p></p>
-
-&nbsp; &nbsp; &nbsp;
-<a href="/facturacion" class="btn btn-danger">Regresar </a>
-';
-//Termina Almacenar datos del DTE
-
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br>";
 }
 
+
 ?>
+<p></p>
+<a href="/facturacion/verpdf/{{ $detalles[0]->coticode}}" class="btn btn-primary">Imprimir</a> &nbsp; &nbsp; &nbsp; <a href="/facturacion" class="btn btn-danger">Regresar </a>

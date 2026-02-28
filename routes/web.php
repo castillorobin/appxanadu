@@ -146,4 +146,5 @@ Route::get('/dtes/descargar-json', [\App\Http\Controllers\DTEController::class, 
 //Contingencia
 Route::get('/dtes/emitirEnContingencia/{id}', [ContingenciaController::class, 'emitirEnContingencia'])->name('dtes.emitirEnContingencia');
 
-//
+//credito fiscal con turismo
+Route::get('/facturacion/creditofiscaltur', [App\Http\Controllers\FacturaController::class, 'creditofiscaltur'])->name('creditofiscaltur');

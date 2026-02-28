@@ -9,8 +9,20 @@
 @stop
 
 @section('content')
+<style>
+    .select2-container--default .select2-selection--single {
+        height: 38px !important;
+        border: 1px solid #ced4da !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 38px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+</style>
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -28,7 +40,7 @@
 
                     
                     
-                    <form action="/facturacion/fiscalencatur" method="get">
+                    <form action="/facturacion/creditofiscaltur" method="get" id="mainForm">
                         @csrf
                                 @method('GET')
 <div class="container">
@@ -122,14 +134,11 @@
                     <div class=" col-6">
                     <div class="input-group">
                         <span class="input-group-text">Actividad</span>
-                         <select class="form-control js-example-basic-single produ" name="actividad" id="actividad" >
-                        
+                         <select class="form-control js-example-basic-single" name="actividad" id="actividad">
+                            <option value="">Seleccione una actividad...</option>
                             @foreach($actividades as $actividad)
-                            <option value="{{$actividad->codigo}}">{{$actividad->descripcion}} </option>
-                            
-                            
+                                <option value="{{$actividad->codigo}}">{{$actividad->descripcion}}</option>
                             @endforeach 
-                            
                         </select>
                     </div>
                     </div>
@@ -222,7 +231,7 @@
         <div class="row">
             <div class="mb-3 col-2">
                 <label class="form-label">Descripcion </label>
-                        <input type="text" class="form-control" id="detalle" name="detalle" required>
+                        <input type="text" class="form-control" id="detalle" name="detalle" >
             </div>
             <div class=" col-1 " >
             
@@ -246,21 +255,39 @@
                 
             </div> 
             
-            <div class=" col-3 " >
-            
-            <button type="submit" class="btn btn-success mt-4" >Agregar</button>
-        </form>
-            </div>   
-</div>
-                    
+            <div class="col-3">
+    <button type="button" id="btnAgregar" class="btn btn-success mt-4">Agregar</button>
+</div> 
+
 <hr>
-<a href="/facturacion">
-                    <button type="button" class="btn btn-danger">Cancelar</button> </a>
-&nbsp; &nbsp; &nbsp;
-             
+
+<div class="row">
+    <div class="col-12">
+        <table class="table table-bordered" id="tablaDetalle">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Descripción</th>
+                    <th>Cant.</th>
+                    <th>Precio U.</th>
+                    <th>Subtotal</th>
+                    <th>IVA</th>
+                    <th>Turismo</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
 
 
+<div id="inputsOcultos"></div>
 
+<div class="mt-3">
+    <a href="/facturacion" class="btn btn-danger">Cancelar</a>
+    <button type="submit" form="mainForm" class="btn btn-primary">Generar Factura</button>
+</div>
 
 </form>
     
@@ -273,90 +300,100 @@
 
  
 
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-  
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-    $('.js-example-basic-single').select2();
-});
-</script>
-
-
-
-
-
-<script>
-
-function habitacion() {
-    
-//alert("producto");
-
-
-   // alert("Hola habitacion");
-    
-document.getElementById("existencia").value = 1;
-document.getElementById("detalle").value = "Habitacion";
-document.getElementById("precio").value = " ";
-document.getElementById("total").value = " " ;
-document.getElementById("cantidad").value = 1;
-
-
-}
-    function getComboA(selectObject) {
-var id = selectObject.value;  
-//var cant = document.getElementById('can1').text; 
-var canti = document.getElementById('can' + id).value ;
-
-document.getElementById("existencia").value = canti;
-
-var deta = document.getElementById('det' + id).value ;
-
-document.getElementById("detalle").value = deta;
-
-var preci = document.getElementById('pre' + id).value ;
-
-document.getElementById("precio").value = preci;
-
-document.getElementById("total").value = preci * canti ;
-
-
-
-
-}
-
-function totalizar() {
-    var deta = document.getElementById("detalle").value;
-    var canti = document.getElementById("cantidad").value ;
-    var preci = document.getElementById('precio').value ;
-     
-     
-    if (deta == "Habitacion") {
-        var impu2 = preci / 1.18 ;
-        var impu3 = impu2 * 0.13 ;
-        var impu5 = impu2 + impu3;
-        var impu4 = impu2 * 0.05 ;
-
-        impu6 = impu4.toFixed(2);
-       var impu = parseFloat(impu6);
-       // var impu = impu4 ;
-
-        document.getElementById("total").value = preci * canti ;
-    }else{
-        document.getElementById("total").value = preci * canti ;
-    }
-    
-
-
-}
-
-
-
-</script>
-
 
 
 @endsection
 
 
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Inicializar Select2
+        $('#actividad').select2({
+            placeholder: "Buscar actividad económica...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Aplicar también a Depto y Municipio ya que usas la misma clase
+        $('#departamento, #municipio').select2({
+            width: '100%'
+        });
+    });
+
+    let itemIndex = 0;
+
+    function totalizar() {
+        let cant = parseFloat($('#cantidad').val()) || 0;
+        let precio = parseFloat($('#precio').val()) || 0;
+        $('#total').val((cant * precio).toFixed(2));
+    }
+
+    $('#btnAgregar').click(function() {
+        let detalle = $('#detalle').val();
+        let cantidad = parseFloat($('#cantidad').val()) || 0;
+        let precio = parseFloat($('#precio').val()) || 0;
+        let totalBruto = parseFloat($('#total').val()) || 0;
+
+        if (!detalle || cantidad <= 0 || precio <= 0) {
+            alert("Por favor complete los campos del producto con valores válidos");
+            return;
+        }
+
+        let montoSinImpuestos = 0;
+        let iva = 0;
+        let turismo = 0;
+
+        // Lógica de impuestos solicitada
+        if (detalle.toLowerCase().includes("habitacion")) {
+            montoSinImpuestos = totalBruto / 1.18;
+            iva = montoSinImpuestos * 0.13;
+            turismo = montoSinImpuestos * 0.05;
+        } else {
+            montoSinImpuestos = totalBruto / 1.13;
+            iva = montoSinImpuestos * 0.13;
+            turismo = 0;
+        }
+
+        let fila = `
+            <tr id="fila_${itemIndex}">
+                <td>${detalle}</td>
+                <td>${cantidad}</td>
+                <td>$${precio.toFixed(2)}</td>
+                <td>$${montoSinImpuestos.toFixed(2)}</td>
+                <td>$${iva.toFixed(2)}</td>
+                <td>$${turismo.toFixed(2)}</td>
+                <td>$${totalBruto.toFixed(2)}</td>
+                <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(${itemIndex})">X</button></td>
+            </tr>
+        `;
+        $('#tablaDetalle tbody').append(fila);
+
+        let inputs = `
+            <div id="datos_fila_${itemIndex}">
+                <input type="hidden" name="items[${itemIndex}][detalle]" value="${detalle}">
+                <input type="hidden" name="items[${itemIndex}][cantidad]" value="${cantidad}">
+                <input type="hidden" name="items[${itemIndex}][precio]" value="${precio}">
+                <input type="hidden" name="items[${itemIndex}][monto_neto]" value="${montoSinImpuestos.toFixed(4)}">
+                <input type="hidden" name="items[${itemIndex}][iva]" value="${iva.toFixed(4)}">
+                <input type="hidden" name="items[${itemIndex}][turismo]" value="${turismo.toFixed(4)}">
+                <input type="hidden" name="items[${itemIndex}][total]" value="${totalBruto.toFixed(2)}">
+            </div>
+        `;
+        $('#inputsOcultos').append(inputs);
+
+        itemIndex++;
+        $('#detalle').val('');
+        $('#cantidad').val('');
+        $('#precio').val('');
+        $('#total').val('');
+    });
+
+    function eliminarFila(index) {
+        $(`#fila_${index}`).remove();
+        $(`#datos_fila_${index}`).remove();
+    }
+</script>
+@stop

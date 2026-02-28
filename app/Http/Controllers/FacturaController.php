@@ -638,6 +638,64 @@ $ultimoid = Factura::latest('id')->first();
         return view('facturacion.generardteconsumidorexenta', compact('actual', 'detalles', 'cliente', 'conteo'));
     }
 
+   
+        public function creditofiscaltur(Request $request)
+    {
+        // 1. Capturar datos del cliente
+        $cliente = [
+            'nombre'     => $request->nombre,
+            'dui_nit'    => $request->dui,
+            'nrc'        => $request->nrc,
+            'comercial'  => $request->comercial,
+            'direccion'  => $request->direccion,
+            'telefono'   => $request->telefono,
+            'correo'     => $request->correo,
+            'municipio'  => $request->municipio,
+            'departamento' => $request->departamento,
+            'codactividad' => $request->actividad,
+
+        ];
+
+        // 2. Capturar los ítems (el array que creamos en JS)
+        $items = $request->items; // Esto ya viene como un array gracias al nombre items[0][detalle]
+
+        if (!$items || count($items) == 0) {
+            return back()->with('error', 'Debe agregar al menos un producto a la factura.');
+        }
+
+        // 3. Variables para totales generales
+        $totalMontoNeto = 0;
+        $totalIva = 0;
+        $totalTurismo = 0;
+        $totalFactura = 0;
+
+        foreach ($items as $item) {
+            $totalMontoNeto += $item['monto_neto'];
+            $totalIva       += $item['iva'];
+            $totalTurismo   += $item['turismo'];
+            $totalFactura   += $item['total'];
+        }
+//dd($items);
+        // 4. Aquí ya tienes toda la información lista.
+        // Puedes mandarla a una vista de "Vista Previa" o al generador de PDF.
+
+        $actividades = Actividad::where('codigo', $cliente['codactividad'])->get();
+        $actividad = $actividades->first()->descripcion;
+        //dd($actividad);
+        $conteo = ConteoDTE::where('tipo', '03')->first();
+        
+        return view('facturacion.generardtefiscaltur', compact(
+            'cliente', 
+            'items', 
+            'totalMontoNeto', 
+            'totalIva', 
+            'totalTurismo', 
+            'totalFactura',
+            'conteo',
+            'actividad'
+        ));
+    }
+
     /**
      * Store a newly created resource in storage.  crearfiscal
      */
