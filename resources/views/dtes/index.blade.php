@@ -47,6 +47,8 @@
 <th>Número Control</th>
 <th>Código Generación</th>
 <th>Fecha</th>
+<th>Tipo</th>
+<th>Estado</th>
 <th>Acciones</th>
 </tr>
 </thead>
@@ -57,12 +59,40 @@
 <td>{{ $dte->codigo_generacion }}</td>
 <td>{{ $dte->created_at->format('d/m/Y H:i') }}</td>
 <td>
+    @if($dte->tipo_dte === '14')
+        Sujeto Excluido
+    @elseif($dte->tipo_dte === '01')
+        Consumidor Final
+    @elseif($dte->tipo_dte === '05')
+        Nota de Crédito
+    @elseif($dte->tipo_dte === '03')
+        Credito Fiscal
+    @endif  
+  
+</td>
+<td>
+    @if($dte->estado === 'anulado')
+        <span class="badge bg-danger">Anulado</span>
+    @else
+        <span class="badge bg-success">Activo</span>
+    @endif
+</td>
+<td>
+    <a href="{{ route('dtes.verPdf', $dte->id) }}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
 
-<a href="{{ route('dtes.verPdf', $dte->id) }}" target="_blank" class="btn btn-sm btn-info">Ver PDF</a>
+    @if($dte->json_legible_path || $dte->json_firmado_path)
+        <a href="{{ route('dtes.descargarJson', $dte->id) }}" class="btn btn-sm btn-success">Descargar JSON</a>
+    @endif
+@if($dte->estado !== 'anulado')
+    <form action="{{ route('dtes.anular', $dte->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de anular este DTE?');">
+    @csrf
+    <input type="hidden" name="motivo" value="Anulación por solicitud del cliente"> <!-- Puedes hacer esto dinámico si quieres -->
+    <button type="submit" class="btn btn-sm btn-danger">Anular</button>
+</form>
+    @endif
 
-@if($dte->json_legible_path || $dte->json_firmado_path)
-<a href="{{ route('dtes.descargarJson', $dte->id) }}" class="btn btn-sm btn-success">Descargar JSON</a>
-@endif
+
+
 </td>
 </tr>
 @endforeach
